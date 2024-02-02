@@ -219,7 +219,7 @@ function App() {
           </Routes>
         </section>
         <Footer />
-        <div
+        {/* <div
           onClick={() => {
             setEndPopup(false);
             setEndData(null);
@@ -234,7 +234,7 @@ function App() {
             endPopup ? "block" : "hidden"
           } px-8 absolute m-auto inset-0 w-[400px] max-h-[300px] rounded-md bg-forth shadow-md`}
         >
-          {endData && (
+          {endData && orderData && (
             <ul className="flex justify-center items-center gap-1 flex-col h-full text-sm text-center">
               <li className="text-xl font-semibold">Оплата</li>
               <li className="mt-3">Долг</li>
@@ -270,7 +270,7 @@ function App() {
               </li>
             </ul>
           )}
-        </form>
+        </form> */}
       </main>
     </>
   );
