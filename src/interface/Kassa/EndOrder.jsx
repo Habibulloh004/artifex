@@ -31,13 +31,16 @@ export default function EndOrder() {
           const itemDate = new Date(item.create_at);
 
           // Check if the item's date is within the last 3 days
-          return itemDate >= threeDaysAgo && item.all_price > 0 && item.was_paid == 0;
+          return itemDate >= threeDaysAgo;
         });
 
-        setData(lastThreeDaysData);
+        setData(
+          response.data.filter(
+            (item) => item.all_price > 0 && Number(item.was_paid) === 0
+          )
+        );
       })
       .catch((error) => {
-        // Handle errors
         console.error("Error fetching data:", error);
       });
     axios
@@ -51,7 +54,7 @@ export default function EndOrder() {
       });
   }, []);
 
-  if (!data && !clientData || data === null || clientData === null) {
+  if ((!data && !clientData) || data === null || clientData === null) {
     return <p>Loading...</p>;
   }
 
@@ -85,7 +88,8 @@ export default function EndOrder() {
               <Popover.Panel className="absolute right-0 top-16 z-10 mt-3 w-[300px] h-[200px] overflow-auto">
                 <div className="overflow-hidden rounded-lg shadow-lg bg-forth text-black">
                   <ul>
-                    {data && clientData &&
+                    {data &&
+                      clientData &&
                       data.map((item, idx) => {
                         const matchingClient = clientData.find(
                           (client) => client.id === item.user_id
