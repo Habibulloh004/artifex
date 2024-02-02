@@ -49,7 +49,7 @@ function App() {
       .get(ordersApi)
       .then((response) => {
         setOrderData(
-          response.data.filter((order) => +order.order_id === +endData)
+          response.data.filter((order) => Number(order.order_id) === Number(endData))
         );
       })
       .catch((error) => {
