@@ -114,6 +114,10 @@ function App() {
     setHandlePaidSum("");
   };
 
+  if(!orderData || orderData === null) {
+    return <p>Loading...</p>
+  }
+
   return (
     <>
       <main id="main" className="text-third h-screen relative">
