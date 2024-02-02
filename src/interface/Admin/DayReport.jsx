@@ -3,17 +3,17 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useMyContext } from "../../context/Context";
 
-const MonthReport = () => {
-  const { year, month } = useParams();
+const DayReport = () => {
+  const { year, month, day } = useParams();
   const [data, setData] = useState(null);
-  const { f } = useMyContext()
+  const { setUserHistory, formatPhoneNumber } = useMyContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Make a GET request using axios
         const response = await axios.get(
-          `http://127.0.0.1:5000/orders/${year}/${month}`
+          `http://127.0.0.1:5000/orders/${year}/${month}/${day}`
         );
         setData(response.data);
       } catch (error) {
@@ -25,9 +25,8 @@ const MonthReport = () => {
     fetchData();
   }, []);
 
-  console.log(data);
 
-  const tableHead = ["День", "Кол. Заказов", "Кол. продаж", "Продажи"];
+  const tableHead = ["ID", "Номер", "ФИО", "Время"];
 
   if (!data) {
     return <p>Loading...</p>;
@@ -50,20 +49,18 @@ const MonthReport = () => {
             {data.map((item, idx) => (
               <tr className="relative" key={idx}>
                 <td className="py-1 border border-forth">
+                  {item.order_id}
                   <Link
                     className="w-full h-full absolute left-0 top-0 "
-                    to={`/admin/reports/${year}/${month}/${idx + 1}`}
+                    onClick={() => setUserHistory(item)}
+                    to={`/admin/reports/${year}/${month}/${day}/${item.order_id}`}
                   ></Link>
-                  {idx + 1}
                 </td>
+                <td className="py-1 border border-forth">{formatPhoneNumber(item.phone)}</td>
+                <td className="py-1 border border-forth">{item.user_name}</td>
                 <td className="py-1 border border-forth">
-                  {f.format(item.quantity_orders)}
-                </td>
-                <td className="py-1 border border-forth">
-                  {f.format(item.sold_products)}
-                </td>
-                <td className="py-1 border border-forth">
-                  {item.all_price ? f.format(item.all_price) : 0}
+                  {new Date(item.data).toLocaleTimeString()} -{" "}
+                  {new Date(item.data).toLocaleDateString()}
                 </td>
               </tr>
             ))}
@@ -74,4 +71,4 @@ const MonthReport = () => {
   );
 };
 
-export default MonthReport;
+export default DayReport;

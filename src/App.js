@@ -27,6 +27,8 @@ import MonthReport from "./interface/Admin/MonthReport";
 import { useMyContext } from "./context/Context";
 import axios from "axios";
 import { Cancel, createData } from "./images";
+import DayReport from "./interface/Admin/DayReport";
+import UserReport from "./interface/Admin/UserReport";
 
 function App() {
   const navigate = useNavigate();
@@ -42,7 +44,7 @@ function App() {
   }, [windowWidth]);
 
   useEffect(() => {
-    const ordersApi = "/orders/all_orders";
+    const ordersApi = "http://127.0.0.1:5000/orders/all_orders";
     axios
       .get(ordersApi)
       .then((response) => {
@@ -90,7 +92,7 @@ function App() {
 
   const submitPaid = (e) => {
     e.preventDefault();
-    const apiUrl = `/paymethod/${Number(endData)}`;
+    const apiUrl = `http://127.0.0.1:5000/paymethod/${Number(endData)}`;
     const reqPaidAmount = new FormData();
     reqPaidAmount.append("paid", `${handlePaidSum}`);
 
@@ -204,6 +206,14 @@ function App() {
               <Route
                 path=":year/:month"
                 element={<PrivateRoute element={<MonthReport />} />}
+              />
+              <Route
+                path=":year/:month/:day"
+                element={<PrivateRoute element={<DayReport />} />}
+              />
+              <Route
+                path=":year/:month/:day/:user"
+                element={<PrivateRoute element={<UserReport />} />}
               />
             </Route>
           </Routes>

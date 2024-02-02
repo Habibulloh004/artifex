@@ -63,7 +63,7 @@ const AddProduct = () => {
         formData.append("product_quantity", 0);
         formData.append("product_amount", 0);
         formData.append("product_photo", "");
-        await axios.post("/products/new_product", formData, {
+        await axios.post("http://127.0.0.1:5000/products/new_product", formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

@@ -59,21 +59,17 @@ const ColorSklad = () => {
   );
 
   useEffect(() => {
-    const orderApi = `http://127.0.0.1:5000/orders/all_orders`;
-    const productApi = `http://127.0.0.1:5000/products/products_menu`;
+    const orderApi = "http://127.0.0.1:5000/orders/all_orders";
+    const productApi = "http://127.0.0.1:5000/products/products_menu";
 
     axios
       .get(orderApi)
       .then((response) => {
-        const order = response.data.find(
-          (order) => order.order_id === Number(id)
-        );
-        setOrders(order);
+        setOrders(response.data.find((order) => order.order_id === Number(id)));
       })
       .catch((error) => {
         console.log(error);
       });
-
     axios
       .get(productApi)
       .then((response) => {
@@ -119,8 +115,10 @@ const ColorSklad = () => {
     if (orders) {
       const parsedProducts = JSON.parse(orders.products);
 
+      // Clean up recept arrays by converting empty strings to null
       const cleanedProducts = parsedProducts.map((product) => {
         if (product.recept && Array.isArray(product.recept)) {
+          // Convert empty strings to null in the recept array
           product.recept[0] === "" && product?.recept?.shift();
         }
         return product;
@@ -142,9 +140,7 @@ const ColorSklad = () => {
     setSelectedProduct(product);
 
     const filteredIndexes = quantityRef.current
-      .map((item, index) =>
-        item.current && item.current.value > 0 ? index : null
-      )
+      .map((item, index) => (item.current.value > 0 ? index : null))
       .filter((index) => index !== null);
 
     if (objProd) {
@@ -155,9 +151,12 @@ const ColorSklad = () => {
               .filter((_, index) => !filteredIndexes.includes(index))
               .concat(
                 filteredIndexes.map((index) => ({
-                  product_id: Number(nameRefs.current[index].current.innerText),
-                  amount: Number(quantityRef.current[index].current.value),
-                  price: Number(priceRef.current[index].current.innerText.slice(0, -1)),
+                  product_id: nameRefs.current[index].current.innerText,
+                  amount: quantityRef.current[index].current.value,
+                  price: priceRef.current[index].current.innerText.slice(
+                    0,
+                    -1
+                  ),
                 }))
               );
             return { ...item, recept: updatedReceptForIndex };
@@ -298,9 +297,12 @@ const ColorSklad = () => {
               .filter((_, index) => !filteredIndexes.includes(index))
               .concat(
                 filteredIndexes.map((index) => ({
-                  product_id: Number(nameRefs.current[index].current.innerText),
-                  amount: Number(quantityRef.current[index].current.value),
-                  price: Number(priceRef.current[index].current.innerText.slice(0, -1)),
+                  product_id: nameRefs.current[index].current.innerText,
+                  amount: quantityRef.current[index].current.value,
+                  price: priceRef.current[index].current.innerText.slice(
+                    0,
+                    -1
+                  ),
                 }))
               );
             return { ...item, recept: updatedReceptForIndex };
@@ -312,19 +314,21 @@ const ColorSklad = () => {
 
         for (let i = 0; i < updatedRecept.length; i++) {
           const formDataPut = {
-            product_id: Number(updatedRecept[i].product_id),
+            product_id: updatedRecept[i].product_id,
             name: updatedRecept[i].name,
-            amount: Number(updatedRecept[i].amount),
+            amount: updatedRecept[i].amount,
             recept: updatedRecept[i].recept.map(({ quality, ...rest }) => rest),
-            price: Number(updatedRecept[i].price),
+            price: updatedRecept[i].price,
             description: updatedRecept[i].description,
           };
           reqArray.push(formDataPut);
+          console.log(formDataPut);
         }
+
 
         const reqForm = {
           products: reqArray,
-          user_id: Number(orders.user_id),
+          user_id: orders.user_id,
           pay_method: "ДОЛГ",
         };
 
@@ -349,7 +353,7 @@ const ColorSklad = () => {
           .catch((error) => console.log("error", error));
         return updatedRecept;
       });
-      navigate("/sklad/request");
+      // navigate("/sklad/request");
     }
   };
 
@@ -357,7 +361,7 @@ const ColorSklad = () => {
     setInputValues(inputValues.map(() => ({ quantity: "", price: "" })));
   }, [selectedProductIndex]);
 
-  if (!orders || orders === null || objProd === null || !objProd.length) {
+  if (!orders || orders === null || objProd === null) {
     return <p>Loading...</p>;
   }
 

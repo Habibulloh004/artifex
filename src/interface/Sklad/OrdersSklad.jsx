@@ -8,8 +8,8 @@ const Layout = () => {
   const [users, setUsers] = useState({});
 
   useEffect(() => {
-    const orderApi = "/orders/all_orders";
-    const userApi = "/users/all";
+    const orderApi = "http://127.0.0.1:5000/orders/all_orders";
+    const userApi = "http://127.0.0.1:5000/users/all";
 
     axios
       .get(orderApi)
@@ -38,7 +38,12 @@ const Layout = () => {
       });
   }, []);
 
+
   const tableHead = ["№", "Клиент", "Создано в"];
+
+  if(!orders || orders === null || !users) {
+    return <p>Loading...</p>
+  }
 
   return (
     <main className="w-full h-full">
@@ -49,8 +54,7 @@ const Layout = () => {
             <p className="text-xl font-semibold">Новые заказы</p>
           </div>
         </section>
-
-        <section className="bg-forth w-full min-h-[50%] mt-4 p-3">
+        <section className="w-full min-h-[50%] mt-4">
           {orders === null || orders.length === 0 ? (
             <span>Новых заказов нет</span>
           ) : (

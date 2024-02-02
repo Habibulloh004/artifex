@@ -1,6 +1,9 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Base, Cancel, bigBase, createData } from "../../images";
+import CurrencyInput from "react-currency-input-field";
+import PhoneInput from "react-phone-input-2";
+import { useMyContext } from "../../context/Context";
 
 const Return = () => {
   const ref = useRef(null);
@@ -19,14 +22,15 @@ const Return = () => {
   const [selectedProduct, setSelectedProduct] = useState("");
   const [clientId, setClientId] = useState(null);
   const [productId, setProductId] = useState(null);
+  const { formatPhoneNumber } = useMyContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const productName = await axios.get(
-          "/products/products_menu"
+          "http://127.0.0.1:5000/products/products_menu"
         );
-        const clientName = await axios.get("/users/all");
+        const clientName = await axios.get("http://127.0.0.1:5000/users/all");
         setClient(clientName.data);
         setProduct(productName.data);
       } catch (error) {
@@ -49,7 +53,7 @@ const Return = () => {
   }, [ref]);
 
   // useEffect(() => {
-  //   console.log("pr",product);
+  //   console.log("pr", product);
   // }, [product]);
 
   const handleClientClick = (user) => {
@@ -108,7 +112,9 @@ const Return = () => {
                 handleClick(item);
               }}
             >
-              {item[labelKey]}
+              {labelKey === "phone"
+                ? formatPhoneNumber(item[labelKey])
+                : item[labelKey]}{" "}
               {idKey && <span className="hidden">{item[idKey]}</span>}
             </li>
           ))}
@@ -119,21 +125,21 @@ const Return = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
 
+    const filterClientForName = client.find(
+      (client) => client.phone === formData.client
+    );
+    const filterProductForName = product.find(
+      (prod) => prod.product_name === formData.name
+    );
+
     const formDataToSubmit = {
       name: selectedProduct ? selectedProduct : formData.name,
       quantity: formData.quantity,
       price: formData.price,
       client: selectedClient ? selectedClient : formData.client,
-      clientId: clientId,
-      productId: productId,
+      clientId: clientId === null ? filterClientForName?.id : clientId,
+      productId: productId === null ? filterProductForName?.id : productId,
     };
-
-    // const filteredClient = client.find(
-    //   (item) => item.phone === formDataToSubmit.client
-    // );
-    // const filteredProd = product.find(
-    //   (item) => item.product_name === formDataToSubmit.name
-    // );
 
     try {
       if (
@@ -144,13 +150,19 @@ const Return = () => {
         setError("Please fill in all the required fields");
       } else {
         const formReq = new FormData();
-        formReq.append("user_id", `${clientId}`);
-        formReq.append("product_id", `${productId}`);
+        formReq.append(
+          "user_id",
+          `${clientId === null ? filterClientForName[0].id : clientId}`
+        );
+        formReq.append(
+          "product_id",
+          `${productId === null ? filterProductForName[0].id : productId}`
+        );
         formReq.append("quantity", `${formDataToSubmit.quantity}`);
         formReq.append("summa", `${formDataToSubmit.price}`);
 
         const response = await axios.patch(
-          "/vozvrat", // replace with your API endpoint
+          "http://127.0.0.1:5000/vozvrat", // replace with your API endpoint
           formReq,
           {
             headers: {
@@ -204,6 +216,10 @@ const Return = () => {
     setError("");
   };
 
+  if (!product && !client) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <main>
       <div className="container flex mx-auto w-10/12 mt-10">
@@ -221,7 +237,7 @@ const Return = () => {
               <input
                 type="text"
                 placeholder="Название"
-                className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
+                className="bg-forth w-[70%] rounded-md text-sm p-2"
                 value={selectedProduct}
                 onChange={(e) => {
                   handleInputChange("name", e.target.value);
@@ -235,28 +251,46 @@ const Return = () => {
                 "id" // Assuming 'product_id' is the field for product ID
               )}
             </div>
-            <input
-              type="number"
+            <CurrencyInput
               placeholder="Количество"
-              className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
+              className="bg-forth w-[70%] rounded-md text-sm p-2"
               value={formData.quantity}
-              onChange={(e) => handleInputChange("quantity", Number(e.target.value))}
+              onValueChange={(value, name) => {
+                handleInputChange("quantity", value);
+              }}
+              step={0.01}
+              allowDecimals
+              decimalSeparator="."
+              groupSeparator=","
+              prefix=""
             />
-            <input
-              type="text"
+            <CurrencyInput
               placeholder="Цена"
-              className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
+              className="bg-forth w-[70%] rounded-md text-sm p-2"
               value={formData.price}
-              onChange={(e) => handleInputChange("price", Number(e.target.value))}
+              onValueChange={(value, name) => {
+                handleInputChange("price", value);
+              }}
+              step={0.01}
+              allowDecimals
+              decimalSeparator="."
+              groupSeparator=","
+              prefix=""
             />
-            <div className="flex flex-col gap-3 relative">
-              <input
-                type="text"
-                placeholder="Клиент"
-                className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
+            <div className="flex flex-col gap-3 relative w-[70%]">
+              <PhoneInput
+                country={"uz"}
+                placeholder="Номер клиента"
                 value={selectedClient}
-                onChange={(e) => {
-                  handleInputChange("client", e.target.value);
+                onChange={(value) => {
+                  handleInputChange("client", value);
+                }}
+                inputStyle={{
+                  background: "#DFDFDF",
+                  width: "100%",
+                  borderRadius: "0.375rem",
+                  fontSize: "0.875rem",
+                  lineHeight: "1.25rem",
                 }}
               />
 

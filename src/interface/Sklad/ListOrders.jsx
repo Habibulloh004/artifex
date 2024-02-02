@@ -1,14 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { List } from "../../images";
 import axios from "axios";
+import { useMyContext } from "../../context/Context";
 
 const ListOrders = () => {
   const [orders, setOrders] = useState(null);
   const [productsId, setProductsId] = useState(null);
+  const { f } = useMyContext();
 
   useEffect(() => {
-    const orderApi = "/orders/all_orders";
-    const productsApi = "/products/products_menu";
+    const orderApi = "http://127.0.0.1:5000/orders/all_orders";
+    const productsApi = "http://127.0.0.1:5000/products/products_menu";
 
     axios
       .get(orderApi)
@@ -18,8 +20,25 @@ const ListOrders = () => {
           products: JSON.parse(order.products),
         }));
 
-        // Set the orders to the state
-        setOrders(ordersWithParsedProducts);
+        // Bugungi kun
+        const today = new Date();
+        today.setHours(0, 0, 0, 0); // Bugun sanasini temirle
+
+        // Bugungi kunli buyurtmalarni ajratib olish
+        const todayOrders = ordersWithParsedProducts.filter((order) => {
+          const orderDate = new Date(order.create_at);
+          return orderDate >= today;
+        });
+
+        // Buguni qolmasdan boshqa kunlarga qarab saralash
+        const sortedOrders = [...todayOrders].sort((a, b) => {
+          const dateA = new Date(a.create_at);
+          const dateB = new Date(b.create_at);
+          return dateB - dateA; // Kamayish tartibida saralash
+        });
+
+        // sortedOrders ni sotib olish uchun setOrders(sortedOrders) qilishni unutmang
+        setOrders(sortedOrders);
       })
       .catch((error) => {
         console.log(error);
@@ -44,9 +63,10 @@ const ListOrders = () => {
     "Цена",
     "Статус",
   ];
-  if (!orders || !productsId) {
+  if (!orders || !productsId || orders === null || productsId === null) {
     return <p>Loading...</p>;
   }
+  console.log(orders);
   return (
     <main>
       <div className="container w-10/12 mx-auto mt-10">
@@ -56,7 +76,7 @@ const ListOrders = () => {
             <p className="text-xl font-semibold">Список заказов</p>
           </div>
         </section>
-        <section className="mt-5">
+        <section className="mt-4">
           {orders === null || orders.length === 0 ? (
             <span>Заказов нет</span>
           ) : (
@@ -74,7 +94,7 @@ const ListOrders = () => {
                 {orders?.map((order, idx) => (
                   <tr key={idx} className="text-center">
                     <td className="p-2 text-sm border border-forth">
-                      {idx + 1}
+                      {f.format(idx + 1)}
                     </td>
                     <td className="p-2 text-sm border border-forth">
                       {order.products.map((product, i) => (
@@ -88,7 +108,7 @@ const ListOrders = () => {
                       ))}
                     </td>
                     <td className="p-2 text-sm border border-forth">
-                      {order.order_id}
+                      {f.format(order.order_id)}
                     </td>
                     <td className="p-2 text-sm border border-forth">
                       {order.products.map((product, i) => (
@@ -98,10 +118,10 @@ const ListOrders = () => {
                       ))}
                     </td>
                     <td className="p-2 text-sm border border-forth">
-                      {order.all_quantity}
+                      {f.format(order.all_quantity)}
                     </td>
                     <td className="p-2 text-sm border border-forth">
-                      {order.all_price}
+                      {f.format(order.all_price)}
                     </td>
                     <td className="p-2 text-sm border border-forth">
                       {Number(order.all_price) > 0 ? "Готово" : "Ожидание"}

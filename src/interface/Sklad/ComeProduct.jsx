@@ -1,6 +1,7 @@
 import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Cancel, ComePRod, ComingBox, createData } from "../../images";
+import CurrencyInput from "react-currency-input-field";
 
 const ComeProduct = () => {
   const ref = useRef(null);
@@ -12,13 +13,13 @@ const ComeProduct = () => {
   });
   const [inputProductValue, setInputProductValue] = useState("");
   const [selectedProduct, setSelectedProduct] = useState("");
-  const [productId, setProductId] = useState("");
+  const [productId, setProductId] = useState(null);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const productName = await axios.get(
-          "/products/products_menu"
+          "http://127.0.0.1:5000/products/products_menu"
         );
         setProduct(productName.data);
       } catch (error) {
@@ -105,15 +106,21 @@ const ComeProduct = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    const findProductId = product.find(
+      (prod) => prod.product_name === formData.name
+    );
 
     const formDataToSubmit = {
       name: selectedProduct ? selectedProduct : formData.name,
-      quantity: formData.quantity,
-      productId: productId,
+      quantity:
+        formData.name.length >= 3
+          ? formData.quantity * 1000
+          : formData.quantity,
+      productIdObj: productId === null ? findProductId.id : productId,
     };
 
     const requestData = new FormData();
-    requestData.append("product_quantity", `${formData.quantity}`);
+    requestData.append("product_quantity", `${formDataToSubmit.quantity}`);
 
     try {
       if (
@@ -126,15 +133,13 @@ const ComeProduct = () => {
         setFormData({
           name: "",
           quantity: "",
-          price: "",
-          client: "",
         });
         setInputProductValue("");
         setSelectedProduct("");
         setProductId(null); // Reset productId after submitting
         setError("");
         await axios.patch(
-          `/products/update_product/${formDataToSubmit.productId}`,
+          `http://127.0.0.1:5000/products/update_product/${formDataToSubmit.productIdObj}`,
           requestData,
           {
             headers: {
@@ -170,7 +175,7 @@ const ComeProduct = () => {
     setError("");
   };
 
-  if (!product && !productId) {
+  if ((!product && !productId) || product === null) {
     return <p>Loading...</p>;
   }
 
@@ -205,14 +210,18 @@ const ComeProduct = () => {
                 "id"
               )}
             </div>
-            <input
-              type="number"
+            <CurrencyInput
               placeholder="Количество"
               className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
               value={formData.quantity}
-              onChange={(e) =>
-                handleInputChange("quantity", Number(e.target.value))
-              }
+              onValueChange={(value) => {
+                handleInputChange("quantity", value);
+              }}
+              step={0.01}
+              allowDecimals
+              decimalSeparator="."
+              groupSeparator=","
+              prefix=""
             />
             {error && <p className="text-red-500">{error}</p>}
             <button

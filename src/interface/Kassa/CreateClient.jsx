@@ -1,5 +1,4 @@
-import React from "react";
-import { useForm } from "react-hook-form";
+import React, { useState } from "react";
 import axios from "axios";
 import {
   Cancel,
@@ -10,6 +9,8 @@ import {
   bigCreate,
   createData,
 } from "../../images";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
 
 const CreateClient = () => {
   const icons = [
@@ -29,40 +30,58 @@ const CreateClient = () => {
       for: "tv",
     },
   ];
-  const {
-    register,
-    handleSubmit,
-    watch,
-    reset,
-    formState: { errors },
-  } = useForm();
 
-  const onSubmit = async (data) => {
-    // Extracting the first digit from the phone number
-    const firstDigit = data.phone.slice(1);
+  const [formData, setFormData] = useState({
+    full_name: "",
+    phone: "",
+    year: "",
+    company: "",
+    known_from: "",
+  });
 
-    // Creating a new FormData object with the modified phone value
-    const formData = new FormData();
-    formData.append("full_name", data.full_name);
-    formData.append("phone", firstDigit); // Updated this line
-    formData.append("year", data.year);
-    formData.append("company", data.company);
-    formData.append("known_from", data.known_from);
+  const [error, setError] = useState("");
+
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
+  };
+
+  const onSubmit = async (e) => {
+    e.preventDefault();
+    const form = new FormData();
+    form.append("full_name", formData.full_name);
+    form.append("phone", formData.phone);
+    form.append("year", formData.year);
+    form.append("company", formData.company);
+    form.append("known_from", formData.known_from);
 
     try {
-      const apiUrl = "/users/create_user";
-      await axios.post(apiUrl, formData, {
+      for (const key in formData) {
+        if (!formData[key]) {
+          setError("Пожалуйста, заполните все поля");
+          return;
+        }
+      }
+      const apiUrl = "http://127.0.0.1:5000/users/create_user";
+      await axios.post(apiUrl, form, {
         headers: {
           "Content-Type": "multipart/form-data",
         },
       });
-
+      setFormData({
+        full_name: "",
+        phone: "",
+        year: "",
+        company: "",
+        known_from: "",
+      });
+      setError("");
     } catch (error) {
       console.error("Error:", error);
+      setError("Failed to create user. Please try again.");
     }
-
-    reset();
-    // Boshqa loyihalarda kerak bo'lgan kodlar
   };
 
   return (
@@ -74,51 +93,52 @@ const CreateClient = () => {
             <p className="text-xl font-semibold">Создание клиента</p>
           </section>
           <form
-            className="flex flex-col items-center mt-6 gap-3 w-[400px]"
-            onSubmit={handleSubmit(onSubmit)}
+            className="flex flex-col items-center mt-3 gap-3 w-[400px]"
+            onSubmit={onSubmit}
             autoComplete="off"
           >
             <p>Данные покупателя</p>
             <input
-              {...register("full_name", { required: true })}
               type="text"
+              value={formData.full_name}
+              name="full_name"
               placeholder="ФИО"
-              className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
+              onChange={handleChange}
+              className="bg-forth w-[70%] rounded-md text-sm p-2"
             />
-            <input
-              {...register("phone", {
-                required: true,
-                pattern: /^[0-9+]+$/,
-                maxLength: {
-                  value: 13,
-                  message: "Вы написали много цифр",
-                },
-                minLength: {
-                  value: 13,
-                  message: "Вы ввели мало цифр",
-                },
-              })}
-              type="text"
-              placeholder="Тел. Номер"
-              className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
-              defaultValue="+998"
-              onKeyPress={(e) => {
-                if (e.target.type === "text" && !/^[0-9+]$/.test(e.key)) {
-                  e.preventDefault();
+            <span className="w-[70%]">
+              <PhoneInput
+                country={"uz"}
+                name="phone"
+                placeholder="Тел. Номер"
+                value={formData.phone}
+                onChange={(value) =>
+                  handleChange({ target: { name: "phone", value } })
                 }
-              }}
-            />
+                inputStyle={{
+                  background: "#DFDFDF",
+                  width: "100%",
+                  borderRadius: "0.375rem",
+                  fontSize: "0.875rem",
+                  lineHeight: "1.25rem",
+                }}
+              />
+            </span>
             <input
-              {...register("year", { required: true })}
               type="date"
+              value={formData.year}
+              name="year"
               placeholder="Дата рождения"
-              className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
+              onChange={handleChange}
+              className="bg-forth w-[70%] rounded-md text-sm p-2"
             />
             <input
-              {...register("company", { required: true })}
               type="text"
+              value={formData.company}
+              name="company"
               placeholder="Название компании"
-              className="bg-forth w-[70%] rounded-md text-sm p-1 px-2"
+              onChange={handleChange}
+              className="bg-forth w-[70%] rounded-md text-sm p-2"
             />
             <p className="mt-3">Откуда вы узнали о нас?</p>
             <section className="flex gap-5">
@@ -134,33 +154,33 @@ const CreateClient = () => {
                     id={icon.for}
                     type="radio"
                     name="known_from"
-                    {...register("known_from", { required: true })}
                     value={icon.for}
-                    checked={watch("known_from") === icon.for}
+                    checked={formData.known_from === icon.for}
+                    onChange={handleChange}
                   />
                 </span>
               ))}
             </section>
-            {(errors.known_from ||
-              errors.company ||
-              errors.year ||
-              errors.phone ||
-              errors.full_name) && (
-              <p className="text-red-500">{`${
-                errors.phone ? errors.phone.message : "Заполнить бланки"
-              }`}</p>
-            )}
+            {error && <p className="text-red-500">{error}</p>}
             <button
-              className="flex items-center justify-center w-[50%] rounded-md text-sm p-1 gap-2 bg-forth "
+              className="flex items-center justify-center w-[50%] rounded-md text-sm p-1 gap-2 bg-forth"
               type="submit"
+              onSubmit={onSubmit}
             >
               <img src={createData} alt="" /> <p>Создать</p>
             </button>
             <button
               onClick={(e) => {
                 e.preventDefault();
+                setFormData({
+                  full_name: "",
+                  phone: "",
+                  year: "",
+                  company: "",
+                  known_from: "",
+                });
               }}
-              className="flex items-center justify-center w-[50%] rounded-md text-sm p-1 gap-2 bg-forth "
+              className="flex items-center justify-center w-[50%] rounded-md text-sm p-1 gap-2 bg-forth"
             >
               <img src={Cancel} alt="" /> <p>Отменить</p>
             </button>

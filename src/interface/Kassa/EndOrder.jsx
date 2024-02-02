@@ -12,8 +12,8 @@ export default function EndOrder() {
   const { setEndData, setEndPopup } = useMyContext();
   useEffect(() => {
     // Replace 'your_api_endpoint' with your actual API endpoint
-    const orderApi = "/orders/all_orders";
-    const clientApi = "/users/dolg_list";
+    const orderApi = "http://127.0.0.1:5000/orders/all_orders";
+    const clientApi = "http://127.0.0.1:5000/users/dolg_list";
 
     axios
       .get(orderApi)
@@ -32,7 +32,7 @@ export default function EndOrder() {
           const itemDate = new Date(item.create_at);
 
           // Check if the item's date is within the last 3 days
-          return itemDate >= threeDaysAgo && item.all_price > 0;
+          return itemDate >= threeDaysAgo && item.all_price > 0 && item.was_paid == 0;
         });
 
         setData(lastThreeDaysData);

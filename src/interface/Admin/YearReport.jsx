@@ -1,17 +1,19 @@
 import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
+import { useMyContext } from "../../context/Context";
 
 const YearReport = () => {
   const { year } = useParams();
   const [data, setData] = useState(null);
+  const { f } = useMyContext()
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         // Make a GET request using axios
         const response = await axios.get(
-          `/orders/${year}`
+          `http://127.0.0.1:5000/orders/${year}`
         );
         setData(response.data);
       } catch (error) {
@@ -23,7 +25,6 @@ const YearReport = () => {
     fetchData();
   }, []);
 
-  console.log(data);
 
   const tableHead = ["Месяц", "Кол. Заказов", "Кол. продаж", "Продажи"];
   const months = [
@@ -70,12 +71,12 @@ const YearReport = () => {
                   ></Link>
                 </td>
                 <td className="py-1 border border-forth">
-                  {item.quantity_orders}
+                  {f.format(item.quantity_orders)}
                 </td>
                 <td className="py-1 border border-forth">
-                  {item.sold_products}
+                  {f.format(item.sold_products)}
                 </td>
-                <td className="py-1 border border-forth">{item.all_amount  ? item.all_amount : 0}</td>
+                <td className="py-1 border border-forth">{item.all_price ? f.format(item.all_price) : 0}</td>
               </tr>
             ))}
           </tbody>

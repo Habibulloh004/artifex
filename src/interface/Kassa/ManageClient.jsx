@@ -15,7 +15,7 @@ const MinusDebt = () => {
     const fetchData = async () => {
       try {
         const clientData = await axios.get(
-          "/users/dolg_list"
+          "http://127.0.0.1:5000/users/dolg_list"
         );
         setClients(clientData.data);
       } catch (error) {
@@ -77,7 +77,7 @@ const MinusDebt = () => {
         formPatch.append("debt_amount", data.sum)
         console.log();
         axios
-          .patch(`/users/update_debt/${userId}`, formPatch)
+          .patch(`http://127.0.0.1:5000/users/update_debt/${userId}`, formPatch)
           .then((response) => {
             console.log("Deleted successfully:", response);
           })
@@ -234,7 +234,7 @@ const AddClient = () => {
     const fetchData = async () => {
       try {
         const clientData = await axios.get(
-          "/users/dolg_list"
+          "http://127.0.0.1:5000/users/dolg_list"
         );
         setClients(clientData.data);
       } catch (error) {
@@ -289,7 +289,7 @@ const AddClient = () => {
       if (user) {
         const userId = user.id;
         axios
-          .post(`/users/add_to_blacklist/${userId}`)
+          .post(`http://127.0.0.1:5000/users/add_to_blacklist/${userId}`)
           .then((response) => {
             console.log("Post successfully:", response);
           })
@@ -434,7 +434,7 @@ const DeleteClient = () => {
     const fetchData = async () => {
       try {
         const clientData = await axios.get(
-          "/users/blacklist_users"
+          "http://127.0.0.1:5000/users/blacklist_users"
         );
         setClients(clientData.data);
       } catch (error) {
@@ -492,7 +492,7 @@ const DeleteClient = () => {
       if (user) {
         const userId = user.id;
         axios
-          .delete(`/users/remote_from_blacklist/${userId}`)
+          .delete(`http://127.0.0.1:5000/users/remote_from_blacklist/${userId}`)
           .then((response) => {
             console.log("Deleted successfully:", response);
 

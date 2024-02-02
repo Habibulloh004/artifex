@@ -1,6 +1,9 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import { AddKassa } from "../../images";
 import axios from "axios";
+import PhoneInput from "react-phone-input-2";
+import { useMyContext } from "../../context/Context";
+import CurrencyInput from "react-currency-input-field";
 
 const Order = () => {
   //   const Products = () => {
@@ -112,14 +115,29 @@ const Order = () => {
   const [clients, setClients] = useState(null);
   const [filteredClients, setFilteredClients] = useState([]);
   const [inputNumber, setInputNumber] = useState("");
+  const [drop, setDrop] = useState(false);
+  const { formatPhoneNumber, f } = useMyContext();
+  const ref = useRef(null);
+
+  useEffect(() => {
+    const clickOutside = (e) => {
+      if (!e.composedPath().includes(ref.current)) {
+        setDrop(false);
+      }
+    };
+    document.body.addEventListener("click", clickOutside);
+    return () => {
+      document.body.removeEventListener("click", clickOutside);
+    };
+  }, [ref]);
 
   useEffect(() => {
     const fetchData = async () => {
       try {
         const productGet = await axios.get(
-          "/products/products_menu"
+          "http://127.0.0.1:5000/products/products_menu"
         );
-        const clientGet = await axios.get("/users/all");
+        const clientGet = await axios.get("http://127.0.0.1:5000/users/all");
         setProduct(
           productGet.data.filter(
             (prod) => prod.product_quantity > 0 && prod.product_name.length >= 3
@@ -207,23 +225,25 @@ const Order = () => {
   };
   const handleClientInput = (value) => {
     setInputNumber(value);
+    setDrop(true);
 
-    // Filter clients based on input value
     setFilteredClients(
       clients?.filter((client) =>
         client.phone?.toLowerCase().includes(value?.toLowerCase())
       ) || []
     );
 
-    // Additional logic if needed
-
-    // Clear filtered clients if the input is empty
     if (!value) {
       setFilteredClients([]);
     }
   };
+
   const onSubmitForm = async (e) => {
     e.preventDefault();
+    const findClientFromNumber = clients.find(
+      (client) => client.phone === inputNumber
+    );
+
     const isAnyFieldEmpty = products.some((row) =>
       Object.values(row).some((value) => !value)
     );
@@ -232,21 +252,21 @@ const Order = () => {
       setError("Ошибка: все вводимые данные должны быть завершены.");
       return;
     }
-
     const formdata = new FormData();
-
     formdata.append(
       "products",
       "" + JSON.stringify(products.map(({ quality, ...rest }) => rest))
     );
-    formdata.append("user_id", selectedClient?.id);
+    formdata.append(
+      "user_id",
+      selectedClient === null ? findClientFromNumber?.id : selectedClient?.id
+    );
     formdata.append("pay_method", "ДОЛГ");
 
     try {
-      await axios.post("/orders/new_order", formdata, {
+      await axios.post("http://127.0.0.1:5000/orders/new_order", formdata, {
         headers: {
-          "Content-Type": "multipart/form-data", // Set the content type to JSON
-          // Add any additional headers as needed
+          "Content-Type": "multipart/form-data", 
         },
       });
       setProducts([
@@ -254,7 +274,7 @@ const Order = () => {
       ]);
       setInputNumber("");
       setError("");
-      window.location.reload();
+      // window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -269,6 +289,10 @@ const Order = () => {
     "Действия",
   ];
 
+  if (!clients) {
+    return <p>Loading...</p>;
+  }
+
   return (
     <main>
       <form
@@ -279,24 +303,29 @@ const Order = () => {
         <div className="flex gap-4 items-center">
           <p className={`font-semibold text-xl`}>Новый заказ</p>
           <div className="flex flex-col gap-3 relative">
-            <input
-              type="text"
-              className="py-1 px-3 text-[12px] w-[200px] rounded-md border border-primary"
+            <PhoneInput
+              country={"uz"}
               placeholder="Номер клиента"
               value={inputNumber}
-              onChange={(e) => {
-                const inputValue = e.target.value;
-                const sanitizedValue = inputValue.replace(/[^0-9+]/g, ""); // Allow only digits and '+'
-
-                setInputNumber(sanitizedValue);
-                setSelectedClient(null); // Clear selected client when input changes
-                handleClientInput(sanitizedValue);
+              onChange={(value) => {
+                setInputNumber(value);
+                setSelectedClient(null);
+                handleClientInput(value);
               }}
-              pattern="[0-9+]*" // Specify the allowed pattern
+              inputStyle={{
+                background: "#DFDFDF",
+                width: "100%",
+                borderRadius: "0.375rem",
+                fontSize: "0.875rem",
+                lineHeight: "1.25rem",
+              }}
             />
 
-            {filteredClients.length > 0 && inputNumber.length > 0 && (
-              <ul className="flex-col overflow-auto absolute top-9 gap-2 w-[200px] h-[200px] py-3 rounded-lg bg-fifth z-50">
+            {drop && filteredClients.length > 0 && inputNumber.length > 0 && (
+              <ul
+                ref={ref}
+                className="flex-col overflow-auto absolute top-9 gap-2 w-[200px] h-[200px] py-3 rounded-lg bg-fifth z-50"
+              >
                 {filteredClients.map((client, idx) => (
                   <li
                     className="px-3 py-1 cursor-pointer hover:bg-fifth w-full"
@@ -307,12 +336,13 @@ const Order = () => {
                       setFilteredClients([]);
                     }}
                   >
-                    {client.phone}
+                    {formatPhoneNumber(client.phone)}
                   </li>
                 ))}
               </ul>
             )}
           </div>
+          {selectedClient && <p className="">{selectedClient.full_name}</p>}
         </div>
         <section className="mt-5">
           <div>
@@ -369,29 +399,35 @@ const Order = () => {
                       )}
                     </td>
                     <td className="border">
-                      <input
-                        type="number"
+                      <CurrencyInput
                         className="px-2 outline-none text-sm w-full"
                         value={row.amount}
-                        onChange={(e) => {
+                        onValueChange={(value, name) => {
                           const updatedProducts = [...products];
-                          updatedProducts[index].amount = Number(
-                            e.target.value
-                          );
+                          updatedProducts[index].amount = value;
                           setProducts(updatedProducts);
                         }}
+                        step={0.01}
+                        allowDecimals
+                        decimalSeparator="."
+                        groupSeparator=","
+                        prefix=""
                       />
                     </td>
                     <td className="border">
-                      <input
-                        type="number"
+                      <CurrencyInput
                         className="px-2 outline-none text-sm w-full"
                         value={row.price}
-                        onChange={(e) => {
+                        onValueChange={(value, name) => {
                           const updatedProducts = [...products];
-                          updatedProducts[index].price = Number(e.target.value);
+                          updatedProducts[index].price = value;
                           setProducts(updatedProducts);
                         }}
+                        step={0.01}
+                        allowDecimals
+                        decimalSeparator="."
+                        groupSeparator=","
+                        prefix=""
                       />
                     </td>
                     <td className="border bg-red-500">

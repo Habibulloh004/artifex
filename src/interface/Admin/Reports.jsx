@@ -12,7 +12,7 @@ const Reports = () => {
   const navigate = useNavigate();
   const [selectedYear, setSelectedYear] = useState(null);
   const location = useLocation();
-  const { month, year } = useParams();
+  const { month, year, day, user } = useParams();
 
   const generateYears = (start, end) => {
     const years = [];
@@ -33,7 +33,6 @@ const Reports = () => {
 
   const handleLiClick = (year) => {
     setSelectedYear(null); // O'zgarmas holatga o'tkazish
-
   };
   const monthsRussian = [
     "январь",
@@ -80,6 +79,22 @@ const Reports = () => {
           {location.pathname === `/admin/reports/${year}/${month}` && (
             <p className="font-semibold ml-4">
               {filteredMonth.charAt(0).toUpperCase() + filteredMonth.slice(1)}
+            </p>
+          )}
+          {location.pathname ===
+            `/admin/reports/${year}/${month}/${day}` && (
+            <p className="font-semibold ml-4">
+              {filteredMonth.charAt(0).toUpperCase() +
+                filteredMonth.slice(1)}
+              , {day}
+            </p>
+          )}
+          {location.pathname ===
+            `/admin/reports/${year}/${month}/${day}/${user}` && (
+            <p className="font-semibold ml-4">
+              {filteredMonth.charAt(0).toUpperCase() +
+                filteredMonth.slice(1)}
+              , {day}, Клиент ID: {user}
             </p>
           )}
           <button

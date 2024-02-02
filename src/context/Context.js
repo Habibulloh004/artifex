@@ -6,9 +6,35 @@ const MyContext = createContext();
 export const MyContextProvider = ({ children }) => {
   const [endData, setEndData] = useState(null);
   const [endPopup, setEndPopup] = useState(false);
+  const [userHistory, setUserHistory] = useState(null);
+  const f = new Intl.NumberFormat("en-GB");
+  function formatPhoneNumber(phoneNumber) {
+    const numericPhoneNumber = phoneNumber.replace(/\D/g, "");
+
+    const formattedPhoneNumber = `+${numericPhoneNumber.slice(
+      0,
+      3
+    )} (${numericPhoneNumber.slice(3, 5)}) ${numericPhoneNumber.slice(
+      5,
+      8
+    )}-${numericPhoneNumber.slice(8, 10)}-${numericPhoneNumber.slice(10)}`;
+
+    return formattedPhoneNumber;
+  }
 
   return (
-    <MyContext.Provider value={{ endData, setEndData, endPopup, setEndPopup}}>
+    <MyContext.Provider
+      value={{
+        endData,
+        setEndData,
+        endPopup,
+        setEndPopup,
+        userHistory,
+        setUserHistory,
+        f,
+        formatPhoneNumber
+      }}
+    >
       {children}
     </MyContext.Provider>
   );

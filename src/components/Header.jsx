@@ -1,8 +1,7 @@
 import React from "react";
-import { KassaNotice, Logo, Notice, User } from "../images";
+import { Logo, User } from "../images";
 import { Link, Outlet, useLocation } from "react-router-dom";
 import { navItem } from "./data";
-import Example from "../test";
 import EndOrder from "../interface/Kassa/EndOrder";
 
 const Header = () => {
@@ -35,9 +34,13 @@ const Header = () => {
             {/* <Example /> */}
           </ul>
           <span
+            onClick={() => {
+              localStorage.removeItem("auth")
+              window.location.reload()
+            }}
             className={`${
               location.pathname === "/login" ? "hidden" : "flex"
-            } ml-auto justify-end items-center gap-3 w-[100px]`}
+            } ml-auto justify-end items-center cursor-pointer gap-3 w-[100px]`}
           >
             <p>{account?.charAt(0)?.toUpperCase() + account?.slice(1)}</p>{" "}
             <img className="w-[40px]" src={User} alt="" />

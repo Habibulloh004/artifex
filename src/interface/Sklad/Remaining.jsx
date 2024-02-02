@@ -1,13 +1,15 @@
 import React, { useEffect, useState } from "react";
 import { PlusProd } from "../../images";
 import axios from "axios";
+import { useMyContext } from "../../context/Context";
 
 const Remaining = () => {
   const [products, setProducts] = useState(null);
+  const { f } = useMyContext()
 
   useEffect(() => {
     axios
-      .get("/products/products_menu")
+      .get("http://127.0.0.1:5000/products/products_menu")
       .then((response) => {
         setProducts(response.data);
       })
@@ -18,7 +20,7 @@ const Remaining = () => {
 
   const tableHead = ["№", "Название", "Количество"];
 
-  if (!products) {
+  if (!products || products === null) {
     return <p>Loading...</p>;
   }
 
@@ -44,9 +46,9 @@ const Remaining = () => {
               {Array.isArray(products) &&
                 products.map((prod, index) => (
                   <tr key={index} className="text-sm">
-                    <td className="border py-2">{index + 1}</td>
+                    <td className="border py-2">{f.format(index + 1)}</td>
                     <td className="border py-2">{prod.product_name}</td>
-                    <td className="border py-2">{prod.product_quantity}</td>
+                    <td className="border py-2">{f.format(prod.product_quantity)}{" "}{prod.product_name.length >= 3 ? "кг.": "г."}</td>
                   </tr>
                 ))}
             </tbody>
