@@ -11,7 +11,6 @@ export default function EndOrder() {
   const [clientData, setClientData] = useState(null);
   const { setEndData, setEndPopup } = useMyContext();
   useEffect(() => {
-    // Replace 'your_api_endpoint' with your actual API endpoint
     const orderApi = "http://127.0.0.1:5000/orders/all_orders";
     const clientApi = "http://127.0.0.1:5000/users/dolg_list";
 
@@ -52,7 +51,7 @@ export default function EndOrder() {
       });
   }, []);
 
-  if (!data && !clientData) {
+  if (!data && !clientData || data === null || clientData === null) {
     return <p>Loading...</p>;
   }
 

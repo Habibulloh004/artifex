@@ -219,7 +219,7 @@ function App() {
           </Routes>
         </section>
         <Footer />
-        {/* <div
+        <div
           onClick={() => {
             setEndPopup(false);
             setEndData(null);
@@ -270,7 +270,7 @@ function App() {
               </li>
             </ul>
           )}
-        </form> */}
+        </form>
       </main>
     </>
   );
