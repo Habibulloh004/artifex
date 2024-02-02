@@ -46,7 +46,7 @@ const Header = () => {
             <img className="w-[40px]" src={User} alt="" />
           </span>
           <span className="ml-10">
-            <EndOrder />
+            {/* <EndOrder /> */}
           </span>
         </div>
       </nav>

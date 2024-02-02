@@ -17,23 +17,19 @@ export default function EndOrder() {
     axios
       .get(orderApi)
       .then((response) => {
-        // Sort the data by date in descending order
-        const sortedData = response.data.sort((a, b) => {
-          return new Date(b.create_at) - new Date(a.create_at);
-        });
+        // const sortedData = response.data.sort((a, b) => {
+        //   return new Date(b.create_at) - new Date(a.create_at);
+        // });
 
-        // Get the data for the last 3 days
-        const today = new Date();
-        const threeDaysAgo = new Date(today);
-        threeDaysAgo.setDate(today.getDate() - 3);
+        // const today = new Date();
+        // const threeDaysAgo = new Date(today);
+        // threeDaysAgo.setDate(today.getDate() - 3);
 
-        const lastThreeDaysData = sortedData.filter((item) => {
-          const itemDate = new Date(item.create_at);
+        // const lastThreeDaysData = sortedData.filter((item) => {
+        //   const itemDate = new Date(item.create_at);
 
-          // Check if the item's date is within the last 3 days
-          return itemDate >= threeDaysAgo;
-        });
-
+        //   return itemDate >= threeDaysAgo;
+        // });
         setData(
           response.data.filter(
             (item) => item.all_price > 0 && Number(item.was_paid) === 0
