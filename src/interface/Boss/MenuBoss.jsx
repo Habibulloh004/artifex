@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { AddKassa, Boss } from "../../images";
 import axios from "axios";
 import { useMyContext } from "../../context/Context";
+import CurrencyInput from "react-currency-input-field";
 
 const MenuBoss = () => {
   const [products, setProducts] = useState(null);
@@ -147,19 +148,17 @@ const MenuBoss = () => {
                       <td className="border py-2">{index + 1}</td>
                       <td className="border py-2">{prod.product_name}</td>
                       <td className="border py-2">
-                        <input
-                          type="number"
-                          value={
-                            prod.product_amount !== undefined &&
-                            prod.product_amount !== null && prod.product_amount !== 0
-                              ? prod.product_amount
-                              : ""
-                          }
-                          onChange={(e) =>
-                            handlePriceChange(index, e.target.value)
-                          }
-                          step={"any"}
+                        <CurrencyInput
                           className="px-2 outline-none text-sm w-full"
+                          value={prod.product_amount > 0 ? prod.product_amount : ""}
+                          onValueChange={(value, name) => {
+                            handlePriceChange(index, value);
+                          }}
+                          step={0.01}
+                          allowDecimals
+                          decimalSeparator="."
+                          groupSeparator=" "
+                          prefix=""
                         />
                       </td>
                       <td className="border py-2">

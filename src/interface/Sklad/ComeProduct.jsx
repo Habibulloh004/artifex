@@ -113,11 +113,12 @@ const ComeProduct = () => {
     const formDataToSubmit = {
       name: selectedProduct ? selectedProduct : formData.name,
       quantity:
-        formData.name.length >= 3
+        selectedProduct.length >= 3
           ? formData.quantity * 1000
           : formData.quantity,
       productIdObj: productId === null ? findProductId.id : productId,
     };
+
 
     const requestData = new FormData();
     requestData.append("product_quantity", `${formDataToSubmit.quantity}`);
@@ -179,6 +180,8 @@ const ComeProduct = () => {
     return <p>Loading...</p>;
   }
 
+  console.log(formData);
+
   return (
     <main>
       <div className="container flex mx-auto w-10/12 mt-10">
@@ -220,7 +223,7 @@ const ComeProduct = () => {
               step={0.01}
               allowDecimals
               decimalSeparator="."
-              groupSeparator=","
+              groupSeparator=" "
               prefix=""
             />
             {error && <p className="text-red-500">{error}</p>}

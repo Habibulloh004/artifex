@@ -16,7 +16,7 @@ const Layout = () => {
       .then((response) => {
         setOrders(
           response.data.filter(
-            (order) => order.all_price <= 0 
+            (order) => order.all_priceSum <= 0 
           )
         );
       })

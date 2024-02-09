@@ -93,7 +93,7 @@ const UserReport = () => {
             <tbody>
               <tr>
                 <td className="py-1 border-2 border-third border-third-forth">
-                  {userHis?.order_id}
+                  {f.format(userHis?.order_id)}
                 </td>
                 <td className="py-1 border-2 border-third border-third-forth">
                   {usersAll?.phone && formatPhoneNumber(usersAll?.phone)}
@@ -114,64 +114,94 @@ const UserReport = () => {
             <tbody>
               {products &&
                 products?.map((item, idx) => (
-                  <tr key={idx}>
-                    <td className="border-2 border-third w-[15%]">
-                      <span>
-                        {productsId?.map((productId) =>
-                          productId.id === item?.product_id
-                            ? productId.product_name
-                            : null
-                        ) || "Unknown Product"}
-                      </span>
-                    </td>
+                  <React.Fragment key={idx}>
+                    <tr>
+                      <td className="border-2 border-third w-[50%]">
+                        <span>
+                          {productsId?.map((productId) =>
+                            productId.id === item?.product_id
+                              ? productId.product_name
+                              : null
+                          ) || "Unknown Product"}
+                        </span>
+                      </td>
 
-                    <td className="border-2 border-third w-[5%]">
-                      {item?.amount}
-                    </td>
+                      <td className="border-2 border-third w-[20%]">
+                        {f.format(item?.amount / 1000)} кг
+                      </td>
 
-                    <td className="border-2 border-third w-[50%]">
-                      <table className="w-full text-center">
-                        <tbody>
-                          <tr>
-                            {item?.recept?.map((recept, i) => (
-                              <td
-                                key={i}
-                                className={`border-r-2 border-third ${
-                                  item.recept && i === item.recept.length - 1
-                                    ? "last:border-r-0"
-                                    : ""
-                                }`}
-                              >
-                                {productsId?.map((productId) =>
-                                  productId.id === recept?.product_id
-                                    ? productId.product_name
-                                    : null
-                                ) || "Unknown Product"}
-                              </td>
-                            ))}
-                          </tr>
-                          <tr>
-                            {item?.recept?.map((recept, i) => (
-                              <td
-                                key={i}
-                                className={`border-r-2 border-t-2 border-third ${
-                                  i === item.recept.length - 1
-                                    ? "last:border-r-0"
-                                    : ""
-                                }`}
-                              >
-                                {recept?.amount}
-                              </td>
-                            ))}
-                          </tr>
-                        </tbody>
-                      </table>
-                    </td>
-
-                    <td className="border-2 border-third w-[30%] overflow-auto">
-                      {item?.description}
-                    </td>
-                  </tr>
+                      <td className="border-2 border-third w-[30%]">
+                        <table className="w-full text-center">
+                          <tbody>
+                            <tr>
+                              {item?.recept?.map((recept, i) => (
+                                <td
+                                  key={i}
+                                  className={`border-r-2 border-third w-[12.5%] ${
+                                    item.recept && i === item.recept.length - 1
+                                      ? "last:border-r-0"
+                                      : ""
+                                  }`}
+                                >
+                                  {productsId?.map((productId) =>
+                                    productId.id === recept?.product_id
+                                      ? productId.product_name
+                                      : null
+                                  ) || "Unknown Product"}
+                                </td>
+                              ))}
+                              {item?.recept &&
+                                item.recept.length < 8 &&
+                                Array.from({
+                                  length: 8 - item.recept.length,
+                                }).map((_, i) => (
+                                  <td
+                                    key={i}
+                                    className="border-r-2 border-third w-[12.5%] last:border-r-0"
+                                  >
+                                    {/* Bo'sh td */}
+                                  </td>
+                                ))}
+                            </tr>
+                            <tr>
+                              {item?.recept?.map((recept, i) => (
+                                <td
+                                  key={i}
+                                  className={`border-r-2 border-t-2 border-third w-[12.5%] ${
+                                    i === item.recept.length - 1
+                                      ? "last:border-r-0"
+                                      : ""
+                                  }`}
+                                >
+                                  {recept?.amount} г
+                                </td>
+                              ))}
+                              {item?.recept &&
+                                item.recept.length < 8 &&
+                                Array.from({
+                                  length: 8 - item.recept.length,
+                                }).map((_, i) => (
+                                  <td
+                                    key={i}
+                                    className="border-r-2 border-t-2 w-[12.5%] border-third last:border-r-0"
+                                  >
+                                    {/* Bo'sh td */}
+                                  </td>
+                                ))}
+                            </tr>
+                          </tbody>
+                        </table>
+                      </td>
+                    </tr>
+                    <tr>
+                      <td
+                        colSpan={3}
+                        className="border-2 border-third w-[45%] py-2 overflow-auto"
+                      >
+                        {item?.description}
+                      </td>
+                    </tr>
+                  </React.Fragment>
                 ))}
             </tbody>
           </table>
@@ -182,14 +212,17 @@ const UserReport = () => {
               <tbody>
                 <tr>
                   <td className="border-2 border-third">Общые сумма заказа</td>
-                  <td className="border-2 border-third w-[20%]">
-                    {f.format(data?.all_price)}
+                  <td className="border-2 border-third px-5">
+                    {data.all_priceDol ? f.format(data.all_priceDol) : 0} USD{" "}
+                    <br />
+                    {data.all_priceSum ? f.format(data.all_priceSum) : 0} сум
                   </td>
                 </tr>
                 <tr>
                   <td className="border-2 border-third">Долг</td>
-                  <td className="border-2 border-third w-[20%]">
-                    {f.format(data?.dolg)}
+                  <td className="border-2 border-third px-5">
+                    {data.dolgDol ? f.format(data.dolgDol) : 0} USD <br />
+                    {data.dolgSum ? f.format(data.dolgSum) : 0} сум
                   </td>
                 </tr>
               </tbody>

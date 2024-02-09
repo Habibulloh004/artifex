@@ -255,7 +255,14 @@ const Order = () => {
     const formdata = new FormData();
     formdata.append(
       "products",
-      "" + JSON.stringify(products.map(({ quality, ...rest }) => rest))
+      "" +
+        JSON.stringify(
+          products.map(({ quality, ...rest }) => ({
+            ...rest,
+            amount: +rest.amount * 1000,
+            price: +rest.price / 1000,
+          }))
+        )
     );
     formdata.append(
       "user_id",
@@ -266,7 +273,7 @@ const Order = () => {
     try {
       await axios.post("http://127.0.0.1:5000/orders/new_order", formdata, {
         headers: {
-          "Content-Type": "multipart/form-data", 
+          "Content-Type": "multipart/form-data",
         },
       });
       setProducts([
@@ -274,7 +281,7 @@ const Order = () => {
       ]);
       setInputNumber("");
       setError("");
-      // window.location.reload();
+      window.location.reload();
     } catch (error) {
       console.log(error);
     }
@@ -410,7 +417,7 @@ const Order = () => {
                         step={0.01}
                         allowDecimals
                         decimalSeparator="."
-                        groupSeparator=","
+                        groupSeparator=" "
                         prefix=""
                       />
                     </td>
@@ -426,7 +433,7 @@ const Order = () => {
                         step={0.01}
                         allowDecimals
                         decimalSeparator="."
-                        groupSeparator=","
+                        groupSeparator=" "
                         prefix=""
                       />
                     </td>
@@ -459,7 +466,7 @@ const Order = () => {
                 className="ml-2 mt-2 rounded-md py-1 px-2 bg-forth flex items-center gap-1 text-sm"
               >
                 <img className="w-4" src={AddKassa} alt="" />
-                <p>Переслать на кассу</p>
+                <p>Переслать на колировка</p>
               </button>
             </div>
           </div>

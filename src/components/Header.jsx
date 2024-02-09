@@ -17,9 +17,11 @@ const Header = () => {
             <img className="w-[200px] h-[80px] mt-3" src={Logo} alt="" />
           </Link>
           <ul
-            className={`${
-              location.pathname === "/login" ? "hidden" : "flex"
-            } ml-32 gap-8`}
+            className={`${location.pathname === "/login" ? "hidden" : "flex"} ${
+              location.pathname.startsWith("/sklad")
+                ? "gap-5 text-[14px]"
+                : "gap-8"
+            } ml-32`}
           >
             {nav?.items.map((navs) => (
               <li key={navs.name}>
@@ -35,8 +37,8 @@ const Header = () => {
           </ul>
           <span
             onClick={() => {
-              localStorage.removeItem("auth")
-              window.location.reload()
+              localStorage.removeItem("auth");
+              window.location.reload();
             }}
             className={`${
               location.pathname === "/login" ? "hidden" : "flex"
@@ -46,7 +48,7 @@ const Header = () => {
             <img className="w-[40px]" src={User} alt="" />
           </span>
           <span className="ml-10">
-            {/* <EndOrder /> */}
+            <EndOrder />
           </span>
         </div>
       </nav>

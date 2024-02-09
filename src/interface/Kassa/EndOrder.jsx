@@ -12,7 +12,7 @@ export default function EndOrder() {
   const { setEndData, setEndPopup } = useMyContext();
   useEffect(() => {
     const orderApi = "http://127.0.0.1:5000/orders/all_orders";
-    const clientApi = "http://127.0.0.1:5000/users/dolg_list";
+    const clientApi = "http://127.0.0.1:5000/users/all";
 
     axios
       .get(orderApi)
@@ -31,8 +31,12 @@ export default function EndOrder() {
         //   return itemDate >= threeDaysAgo;
         // });
         setData(
-          response.data.filter(
-            (item) => item.all_price > 0 && Number(item.was_paid) === 0
+          response?.data?.filter(
+            (item) =>
+              item.all_priceSum > 0 &&
+              item.all_priceDol > 0 &&
+              Number(item.was_paidDol) === 0 &&
+              Number(item.was_paidSum) === 0
           )
         );
       })
@@ -49,6 +53,7 @@ export default function EndOrder() {
         console.error("Error fetching data:", error);
       });
   }, []);
+
 
   if ((!data && !clientData) || data === null || clientData === null) {
     return <p>Loading...</p>;
@@ -95,7 +100,7 @@ export default function EndOrder() {
                             key={idx}
                             onClick={() => {
                               close();
-                              setEndData(item.order_id);
+                              setEndData(item);
                               setEndPopup(true);
                             }}
                             className="px-3 py-2 cursor-pointer"

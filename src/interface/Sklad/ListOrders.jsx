@@ -98,6 +98,19 @@ const ListOrders = () => {
                     </td>
                     <td className="p-2 text-sm border border-forth">
                       {order.products.map((product, i) => (
+                        <span key={i}>
+                          {product.recept.map((recept, indexR) => (
+                            <span key={indexR} className="block">
+                              {productsId?.map((productId) =>
+                                productId.id === recept?.product_id
+                                  ? productId.product_name
+                                  : null
+                              ) || "Unknown Product"}
+                            </span>
+                          ))}
+                        </span>
+                      ))}
+                      {order.products.map((product, i) => (
                         <span key={i} className="block">
                           {productsId?.map((productId) =>
                             productId.id === product?.product_id
@@ -118,13 +131,33 @@ const ListOrders = () => {
                       ))}
                     </td>
                     <td className="p-2 text-sm border border-forth">
-                      {f.format(order.all_quantity)}
+                      {order.products.map((product, i) => (
+                        <span key={i}>
+                          {product.recept &&
+                            product.recept.length > 0 &&
+                            product.recept.some((item) => item !== "") &&
+                            product.recept.map(
+                              (recept, indexR) =>
+                                recept !== "" && (
+                                  <span key={indexR} className="block">
+                                    {f.format(recept.amount)} г
+                                  </span>
+                                )
+                            )}
+                        </span>
+                      ))}
+                      {order.products.map((product, i) => (
+                        <span key={i} className="block">
+                          {f.format(product.amount / 1000)} кг
+                        </span>
+                      ))}
                     </td>
                     <td className="p-2 text-sm border border-forth">
-                      {f.format(order.all_price)}
+                      {f.format(Number(order.all_priceDol))} USD <br />
+                      {f.format(Number(order.all_priceSum))} сум
                     </td>
                     <td className="p-2 text-sm border border-forth">
-                      {Number(order.all_price) > 0 ? "Готово" : "Ожидание"}
+                      {Number(order.all_priceDol) > 0 ? "Готово" : "Ожидание"}
                     </td>
                   </tr>
                 ))}

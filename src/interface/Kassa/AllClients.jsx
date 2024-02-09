@@ -4,29 +4,26 @@ import axios from "axios";
 import { completePath } from "../../components/data";
 import { ManageClient } from "./ManageClient";
 import { useMyContext } from "../../context/Context";
+import PhoneInput from "react-phone-input-2";
 
 const AllClients = () => {
   const location = useLocation();
   const [data, setData] = useState();
-  const param = useParams();
-  const myParam = completePath(param.clientPath);
-  const { formatPhoneNumber, f } = useMyContext()
+  const { clientPath } = useParams();
+  const myParam = completePath(clientPath);
+  const { formatPhoneNumber, f } = useMyContext();
   const [inputValue, setInputValue] = useState("");
   useEffect(() => {
     const fetchData = async () => {
       try {
         const response = await axios.get(myParam.url);
-        // const flattenedData = Object.values(response.data).flatMap((item) =>
-        //   Array.isArray(item) ? item : [item]
-        // );
-
         setData(response.data);
       } catch (error) {
         console.error(error);
       }
     };
     fetchData();
-  }, [param.clientPath]);
+  }, [clientPath]);
 
   return (
     <main>
@@ -39,12 +36,21 @@ const AllClients = () => {
               <img src={myParam.icon} className="w-[45px] h-10" alt="" />
               <p className="text-xl font-semibold">{myParam.title}</p>
             </div>
-            <input
-              type="number"
-              placeholder="Номер клиента"
-              className="border border-primary rounded-md text-sm py-1 px-2"
-              onChange={(e) => setInputValue(e.target.value)}
-            />
+            <span>
+              <PhoneInput
+                country={"uz"}
+                name="phone"
+                placeholder="Номер клиента"
+                onChange={(value) => setInputValue(value)}
+                inputStyle={{
+                  background: "#DFDFDF",
+                  borderRadius: "0.375rem",
+                  fontSize: "0.875rem",
+                  lineHeight: "1.25rem",
+                  width: "100%",
+                }}
+              />
+            </span>
             <ManageClient />
           </section>
           <table className="border w-full mt-5">
@@ -82,7 +88,7 @@ const AllClients = () => {
                   .map((client, idx) => (
                     <tr key={idx} className="text-center">
                       <td className="p-2 text-sm border border-secondary">
-                        {idx + 1}
+                        {f.format(idx + 1)}
                       </td>
                       <td className="p-2 text-sm border border-secondary">
                         {client.id}
@@ -94,10 +100,21 @@ const AllClients = () => {
                         {formatPhoneNumber(client.phone)}
                       </td>
                       <td className="p-2 text-sm border border-secondary">
-                        {location.pathname === "/kassa/clients/all-client"
-                          ? client.year
-                          : f.format(client.amount)}
+                        {location.pathname === "/kassa/clients/all-client" ? (
+                          client.year
+                        ) : (
+                          <>{f.format(client.amountDol)} USD <br />
+                            {f.format(client.amountSum)} сум
+                          </>
+                        )}
                       </td>
+                      {location.pathname === "/kassa/clients/all-client" && (
+                        <td className="p-2 text-sm border border-secondary">
+                          {client.company},{" "}
+                          {client.known_from.charAt(0).toUpperCase() +
+                            client.known_from.slice(1)}
+                        </td>
+                      )}
                     </tr>
                   ))
               ) : (

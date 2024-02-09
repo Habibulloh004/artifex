@@ -16,6 +16,7 @@ const ColorSklad = () => {
   const [selectedProductIndex, setSelectedProductIndex] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [inputValues, setInputValues] = useState([]);
+  const [error, setError] = useState("")
   const [allPrice, setAllPrice] = useState(0);
   const [orderTotalPrice, setOrderTotalPrice] = useState(0);
   const [orderProductPrice, setOrderProductPrice] = useState(0);
@@ -157,7 +158,9 @@ const ColorSklad = () => {
                 filteredIndexes.map((index) => ({
                   product_id: Number(nameRefs.current[index].current.innerText),
                   amount: Number(quantityRef.current[index].current.value),
-                  price: Number(priceRef.current[index].current.innerText.slice(0, -1)),
+                  price: Number(
+                    priceRef.current[index].current.innerText.slice(0, -1)
+                  ),
                 }))
               );
             return { ...item, recept: updatedReceptForIndex };
@@ -190,7 +193,7 @@ const ColorSklad = () => {
       <li className="w-[50%] flex">
         <p> Цена:</p>{" "}
         <span className="ml-auto bg-fifth w-[60%] px-2 py-1 rounded-md">
-          {f.format(product.price)} сум
+          {f.format(product.price * 1000)} сум
         </span>
       </li>
     </ul>
@@ -203,6 +206,7 @@ const ColorSklad = () => {
     }
     newInputValues[rowIndex][columnName] = value;
     setInputValues(newInputValues);
+    setError("")
   };
 
   useEffect(() => {
@@ -257,14 +261,12 @@ const ColorSklad = () => {
         };
       });
 
-      // Extract individual arrays for mainProductTotal, receptTotal, and totalPrice
       const mainProductTotalArray = totalPrices.map(
         (price) => price.mainProductTotal
       );
       const receptTotalArray = totalPrices.map((price) => price.receptTotal);
       const totalPriceArray = totalPrices.map((price) => price.totalPrice);
 
-      // Calculate the sum for each array
       const mainProductTotalSum = mainProductTotalArray.reduce(
         (total, price) => total + price,
         0
@@ -282,13 +284,18 @@ const ColorSklad = () => {
       setOrderReceptPrice(receptTotalSum);
       setOrderTotalPrice(totalPriceSum || 0);
     }
-  }, [objProd, setOrderTotalPrice]);
+  }, [inputValues, objProd]);
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
     const filteredIndexes = quantityRef.current
       .map((item, index) => (item.current.value > 0 ? index : null))
       .filter((index) => index !== null);
+
+    if (commentInputs.map((item) => item === "").includes(true)) {
+      setError("Пожалуйста, заполните все необходимые поля");
+      return;
+    }
 
     if (objProd) {
       setObjProd((prevObjProd) => {
@@ -300,7 +307,9 @@ const ColorSklad = () => {
                 filteredIndexes.map((index) => ({
                   product_id: Number(nameRefs.current[index].current.innerText),
                   amount: Number(quantityRef.current[index].current.value),
-                  price: Number(priceRef.current[index].current.innerText.slice(0, -1)),
+                  price: Number(
+                    priceRef.current[index].current.innerText.slice(0, -1)
+                  ),
                 }))
               );
             return { ...item, recept: updatedReceptForIndex };
@@ -328,7 +337,6 @@ const ColorSklad = () => {
           pay_method: "ДОЛГ",
         };
 
-        console.log(reqForm);
         var requestOptions = {
           method: "PUT",
           body: JSON.stringify(reqForm), // JSON ma'lumotlarni yuborish
@@ -350,6 +358,7 @@ const ColorSklad = () => {
         return updatedRecept;
       });
       navigate("/sklad/request");
+      window.location.reload()
     }
   };
 
@@ -357,7 +366,7 @@ const ColorSklad = () => {
     setInputValues(inputValues.map(() => ({ quantity: "", price: "" })));
   }, [selectedProductIndex]);
 
-  if (!orders || orders === null || objProd === null || !objProd.length) {
+  if (!orders || orders === null || objProd === null) {
     return <p>Loading...</p>;
   }
 
@@ -444,7 +453,7 @@ const ColorSklad = () => {
                         step={0.01}
                         allowDecimals
                         decimalSeparator="."
-                        groupSeparator=","
+                        groupSeparator=" "
                         prefix=""
                       />
                     </td>
@@ -513,19 +522,27 @@ const ColorSklad = () => {
                 </tr>
               </tbody>
             </table>
+            {error && <p className="text-red-500 mt-3">{error}</p>}
           </div>
           <article className="flex gap-3 items-end mt-5">
             <div className="flex flex-col gap-3">
               <span>
                 Общая сумма товара{" "}
                 <p className="ml-3 py-1 px-4 bg-forth rounded-md text-center inline">
-                  {f.format(orderProductPrice)}$
+                  {f.format(orderProductPrice)} сум
                 </p>
               </span>
               <span>
                 Общая сумма колировка{" "}
                 <p className="ml-3 py-1 px-4 bg-forth rounded-md text-center inline">
-                  {f.format(orderReceptPrice)}$
+                  {f.format(
+                    orderReceptPrice +
+                      allPrice?.reduce(
+                        (total, currentValue) => total + currentValue,
+                        0
+                      )
+                  )}
+                  $
                 </p>
               </span>
             </div>

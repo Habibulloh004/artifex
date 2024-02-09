@@ -1,4 +1,21 @@
-import { Users, Edit, Base, All, Create, Spam, Wait, Notice, List, ComePRod, PlusProd, Report, Boss, AddProdSvg } from "../images";
+import {
+  Users,
+  Edit,
+  Base,
+  All,
+  Create,
+  Spam,
+  Wait,
+  Notice,
+  List,
+  ComePRod,
+  PlusProd,
+  Report,
+  Boss,
+  AddProdSvg,
+  Cost,
+  ProfitSvg,
+} from "../images";
 
 const users = [
   { role: "kassa", login: "kassauser", password: "kassapass" },
@@ -13,10 +30,17 @@ const navLinks = [
       { name: "Клиенты", path: "/clients", icon: Users },
       { name: "Запрос", path: "/order", icon: Edit },
       { name: "Возврат", path: "/return", icon: Base },
+      { name: "Расход", path: "/cost", icon: Cost },
     ],
   },
   { role: "/boss", items: [{ name: "Меню", path: "/menu", icon: Boss }] },
-  { role: "/admin", items: [{ name: "Отчёты", path: "/reports", icon: Report}] },
+  {
+    role: "/admin",
+    items: [
+      { name: "Отчёты", path: "/reports", icon: Report },
+      { name: "Прибыль", path: "/profit", icon: ProfitSvg },
+    ],
+  },
   {
     role: "/sklad",
     items: [
@@ -25,6 +49,7 @@ const navLinks = [
       { name: "Приход", path: "/coming", icon: ComePRod },
       { name: "Остаток товаров", path: "/remaining", icon: PlusProd },
       { name: "Добавление товаров", path: "/add-product", icon: AddProdSvg },
+      { name: "История расходов", path: "/cost-report", icon: Cost },
     ],
   },
 ];
@@ -61,7 +86,7 @@ const clientPath = [
     path: "all-client",
     icon: All,
     title: "Все клиенты",
-    tableHead: ["№", "ID", "ФИО", "Тел. Номер", "Дата рож."]
+    tableHead: ["№", "ID", "ФИО", "Тел. Номер", "Дата рож.", "Компания"],
   },
   {
     id: 2,
@@ -69,7 +94,7 @@ const clientPath = [
     path: "wait-client",
     icon: Wait,
     title: "Долговые клиенты",
-    tableHead: ["№", "ID", "ФИО", "Тел. Номер", "Долг"]
+    tableHead: ["№", "ID", "ФИО", "Тел. Номер", "Долг"],
   },
   {
     id: 3,
@@ -77,7 +102,7 @@ const clientPath = [
     path: "spam-client",
     icon: Spam,
     title: "Чёрный список",
-    tableHead: ["№", "ID", "ФИО", "Тел. Номер", "Долг"]
+    tableHead: ["№", "ID", "ФИО", "Тел. Номер", "Долг"],
   },
 ];
 

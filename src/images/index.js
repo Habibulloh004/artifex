@@ -33,8 +33,12 @@ import Report from "./Report.svg";
 import ComingBox from "./ComingBox.svg";
 import AddProdSvg from "./AddProdSvg.svg";
 import KassaNotice from "./KassaNotice.svg";
+import Cost from "./Cost.svg";
+import ProfitSvg from "./ProfitSvg.svg";
 
 export {
+  ProfitSvg,
+  Cost,
   KassaNotice,
   AddProdSvg,
   ComingBox,

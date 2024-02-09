@@ -2,16 +2,16 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useMyContext } from "../../context/Context";
+import * as XLSX from "xlsx";
 
 const MonthReport = () => {
   const { year, month } = useParams();
   const [data, setData] = useState(null);
-  const { f } = useMyContext()
+  const { f } = useMyContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Make a GET request using axios
         const response = await axios.get(
           `http://127.0.0.1:5000/orders/${year}/${month}`
         );
@@ -25,7 +25,20 @@ const MonthReport = () => {
     fetchData();
   }, []);
 
-  console.log(data);
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(
+      data.map((item, idx) => ({
+        day: idx + 1,
+        quantity_orders: item.quantity_orders,
+        sold_products: item.sold_products,
+        all_priceDol: item.all_priceDol,
+        all_priceSum: item.all_priceSum,
+      }))
+    );
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "OrdersMonth");
+    XLSX.writeFile(wb, "ordersmonth.xlsx");
+  };
 
   const tableHead = ["День", "Кол. Заказов", "Кол. продаж", "Продажи"];
 
@@ -40,7 +53,7 @@ const MonthReport = () => {
           <thead>
             <tr>
               {tableHead.map((item) => (
-                <th key={item} className="border border-forth py-1">
+                <th key={item} className="border border-forth py-2">
                   {item}
                 </th>
               ))}
@@ -63,12 +76,20 @@ const MonthReport = () => {
                   {f.format(item.sold_products)}
                 </td>
                 <td className="py-1 border border-forth">
-                  {item.all_price ? f.format(item.all_price) : 0}
+                  {item.all_priceDol ? f.format(item.all_priceDol) : 0} USD{" "}
+                  <br />
+                  {item.all_priceSum ? f.format(item.all_priceSum) : 0} сум
                 </td>
               </tr>
             ))}
           </tbody>
         </table>
+        <button
+          onClick={exportToExcel}
+          className="bg-blue-500 text-white px-4 py-1 rounded-md mt-4"
+        >
+          Export to Excel
+        </button>
       </div>
     </main>
   );

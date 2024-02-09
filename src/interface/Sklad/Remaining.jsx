@@ -1,11 +1,12 @@
 import React, { useEffect, useState } from "react";
 import { PlusProd } from "../../images";
 import axios from "axios";
+import * as XLSX from "xlsx";
 import { useMyContext } from "../../context/Context";
 
 const Remaining = () => {
   const [products, setProducts] = useState(null);
-  const { f } = useMyContext()
+  const { f } = useMyContext();
 
   useEffect(() => {
     axios
@@ -20,7 +21,21 @@ const Remaining = () => {
 
   const tableHead = ["№", "Название", "Количество"];
 
-  if (!products || products === null) {
+  const exportToExcel = () => {
+    const ws = XLSX.utils.json_to_sheet(
+      products.map((item) => ({
+        id: item.id,
+        product_amount: item.product_amount,
+        product_name: item.product_name,
+        product_quantity: item.product_quantity,
+      }))
+    );
+    const wb = XLSX.utils.book_new();
+    XLSX.utils.book_append_sheet(wb, ws, "Products");
+    XLSX.writeFile(wb, "products.xlsx");
+  };
+
+  if (!products) {
     return <p>Loading...</p>;
   }
 
@@ -48,11 +63,24 @@ const Remaining = () => {
                   <tr key={index} className="text-sm">
                     <td className="border py-2">{f.format(index + 1)}</td>
                     <td className="border py-2">{prod.product_name}</td>
-                    <td className="border py-2">{f.format(prod.product_quantity)}{" "}{prod.product_name.length >= 3 ? "кг.": "г."}</td>
+                    <td className="border py-2">
+                      {f.format(
+                        prod.product_name.length >= 3
+                          ? Number(prod.product_quantity) / 1000
+                          : Number(prod.product_quantity)
+                      )}{" "}
+                      {prod.product_name.length >= 3 ? "кг." : "г."}
+                    </td>
                   </tr>
                 ))}
             </tbody>
           </table>
+          <button
+            onClick={exportToExcel}
+            className="bg-blue-500 text-white px-4 py-1 rounded-md mt-4"
+          >
+            Export to Excel
+          </button>
         </section>
       </div>
     </main>
