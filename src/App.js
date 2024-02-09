@@ -299,7 +299,7 @@ function App() {
                 element={<PrivateRoute element={<UserReport />} />}
               />
             </Route>
-            <Route
+            {/* <Route
               path="/admin/profit"
               element={<PrivateRoute element={<Profit />} />}
             >
@@ -315,7 +315,7 @@ function App() {
                 path=":year/:month/:day"
                 element={<PrivateRoute element={<DayProfit />} />}
               />
-            </Route>
+            </Route> */}
           </Routes>
         </section>
         <Footer />
