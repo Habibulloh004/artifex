@@ -7,6 +7,7 @@ import axios from "axios";
 import PhoneInput from "react-phone-input-2";
 import { useMyContext } from "../../context/Context";
 import CurrencyInput from "react-currency-input-field";
+import { API } from "../../components/data";
 
 const MinusDebt = () => {
   const [isOpen, setIsOpen] = useState(false);
@@ -25,7 +26,7 @@ const MinusDebt = () => {
     const fetchData = async () => {
       try {
         const clientData = await axios.get(
-          "http://127.0.0.1:5000/users/dolg_list"
+          `${API}users/dolg_list`
         );
         setClients(clientData.data);
       } catch (error) {
@@ -91,7 +92,7 @@ const MinusDebt = () => {
           formPatch.append("debt_amountDol", `${formData.dol}`);
 
           const { data } = await axios.patch(
-            `http://127.0.0.1:5000/users/update_debt/${userId}`,
+            `${API}users/update_debt/${userId}`,
             formPatch
           );
 
@@ -278,9 +279,9 @@ const AddClient = () => {
     const fetchData = async () => {
       try {
         const clientData = await axios.get(
-          "http://127.0.0.1:5000/users/dolg_list"
+          `${API}users/dolg_list`
         );
-        const simpleClient = await axios.get("http://127.0.0.1:5000/users/all");
+        const simpleClient = await axios.get(`${API}users/all`);
 
         setClients(clientData.data);
         setAllSimpleClients(simpleClient.data);
@@ -343,7 +344,7 @@ const AddClient = () => {
         if (user) {
           const userId = user.id;
           axios
-            .post(`http://127.0.0.1:5000/users/add_to_blacklist/${userId}`)
+            .post(`${API}users/add_to_blacklist/${userId}`)
             .then((response) => {
               console.log("Post successfully:", response);
             })
@@ -499,7 +500,7 @@ const DeleteClient = () => {
     const fetchData = async () => {
       try {
         const clientData = await axios.get(
-          "http://127.0.0.1:5000/users/blacklist_users"
+          `${API}users/blacklist_users`
         );
         setClients(clientData.data);
       } catch (error) {
@@ -543,7 +544,7 @@ const DeleteClient = () => {
       if (selectedClient) {
         const userId = selectedClient.id;
         await axios.delete(
-          `http://127.0.0.1:5000/users/remote_from_blacklist/${userId}`
+          `${API}users/remote_from_blacklist/${userId}`
         );
         console.log("Deleted successfully");
 

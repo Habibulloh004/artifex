@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useMyContext } from "../../context/Context";
 import * as XLSX from "xlsx";
+import { API } from "../../components/data";
 
 const YearReport = () => {
   const { year } = useParams();
@@ -14,7 +15,7 @@ const YearReport = () => {
       try {
         // Make a GET request using axios
         const response = await axios.get(
-          `http://127.0.0.1:5000/orders/${year}`
+          `${API}orders/${year}`
         );
         setData(response.data);
       } catch (error) {

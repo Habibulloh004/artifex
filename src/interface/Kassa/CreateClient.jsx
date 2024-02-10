@@ -11,6 +11,7 @@ import {
 } from "../../images";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import { API } from "../../components/data";
 
 const CreateClient = () => {
   const icons = [
@@ -64,7 +65,7 @@ const CreateClient = () => {
           return;
         }
       }
-      const apiUrl = "http://127.0.0.1:5000/users/create_user";
+      const apiUrl = `${API}users/create_user`;
       await axios.post(apiUrl, form, {
         headers: {
           "Content-Type": "multipart/form-data",

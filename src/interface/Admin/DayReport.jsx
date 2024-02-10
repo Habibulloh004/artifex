@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useMyContext } from "../../context/Context";
+import { API } from "../../components/data";
 
 const DayReport = () => {
   const { year, month, day } = useParams();
@@ -13,7 +14,7 @@ const DayReport = () => {
       try {
         // Make a GET request using axios
         const response = await axios.get(
-          `http://127.0.0.1:5000/orders/${year}/${month}/${day}`
+          `${API}orders/${year}/${month}/${day}`
         );
         setData(response.data);
       } catch (error) {

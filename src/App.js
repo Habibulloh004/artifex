@@ -36,6 +36,7 @@ import { Cancel, createData } from "./images";
 import axios from "axios";
 import CurrencyInput from "react-currency-input-field";
 import CostReport from "./interface/Sklad/CostReport";
+import { API } from "./components/data";
 
 function App() {
   const location = useLocation();
@@ -85,7 +86,7 @@ function App() {
   }, [navigate]);
 
   useEffect(() => {
-    const ordersApi = "http://127.0.0.1:5000/orders/all_orders";
+    const ordersApi = `${API}orders/all_orders`;
     axios
       .get(ordersApi)
       .then((response) => {
@@ -118,41 +119,55 @@ function App() {
     setError("");
   };
 
-  console.log(endData);
   useEffect(() => {
-    setAllSumData(
-      Number(paymentData.cash) +
-        Number(paymentData.terminal) +
-        Number(paymentData.card) +
-        Number(paymentData.transfers)
-    );
-  }, [paymentData]);
+    const convertToNumber = (value) => {
+      if (typeof value === "string") {
+        const trimmedValue = value.trim();
+        return trimmedValue === "" ? 0 : Number(trimmedValue);
+      } else if (typeof value === "undefined" || value === null) {
+        return 0;
+      }
+      return Number(value);
+    };
 
+    const cash = convertToNumber(paymentData.cash);
+    const terminal = convertToNumber(paymentData.terminal);
+    const card = convertToNumber(paymentData.card);
+    const transfers = convertToNumber(paymentData.transfers);
+
+    const sumData = cash + terminal + card + transfers;
+    setAllSumData(sumData);
+
+  }, [paymentData]);
 
   const submitPaid = async (e) => {
     e.preventDefault();
 
     const raw = {
-      paidDol: Number(paymentData.dollar),
+      paidDol: Number(paymentData.dollar || 0),
       paidSum:
-        Number(paymentData.cash) +
-        Number(paymentData.card) +
-        Number(paymentData.terminal) +
-        Number(paymentData.transfers),
+        Number(paymentData.cash || 0) +
+        Number(paymentData.card || 0) +
+        Number(paymentData.terminal || 0) +
+        Number(paymentData.transfers || 0),
       payMethod: [
         {
-          dollar: Number(paymentData.dollar),
-          cash: Number(paymentData.cash),
-          terminal: Number(paymentData.terminal),
-          card: Number(paymentData.card),
-          transfers: Number(paymentData.transfers),
+          dollar: Number(paymentData.dollar || 0),
+          cash: Number(paymentData.cash || 0),
+          terminal: Number(paymentData.terminal || 0),
+          card: Number(paymentData.card || 0),
+          transfers: Number(paymentData.transfers || 0),
         },
       ],
     };
+    console.log(raw);
 
-    if(Number(endData.all_priceSum) > Number(raw.paidSum) || Number(endData.all_priceDol) > Number(raw.paidDol)) {
-      setError("Введенная сумма большая!")
-      return
+    if (
+      Number(endData.all_priceSum) < Number(raw.paidSum) ||
+      Number(endData.all_priceDol) < Number(raw.paidDol)
+    ) {
+      setError("Введенная сумма большая!");
+      return;
     }
     const requestOptions = {
       method: "PATCH",
@@ -163,7 +178,7 @@ function App() {
       redirect: "follow",
     };
 
-    const apiURL = "http://127.0.0.1:5000/paymethod/" + endData.order_id;
+    const apiURL = `${API}paymethod/` + endData.order_id;
 
     try {
       // Fetch so'rovni yuborish
@@ -175,11 +190,11 @@ function App() {
       console.log(result);
       setEndPopup(false);
       setEndData(null);
-      window.location.reload()
+      window.location.reload();
     } catch (error) {
       console.log("error", error);
     }
-  };  
+  };
 
   if (windowWidth) {
     return (

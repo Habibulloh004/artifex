@@ -2,14 +2,15 @@ import React, { useEffect, useState } from "react";
 import { Notice } from "../../images";
 import axios from "axios";
 import { Link } from "react-router-dom";
+import { API } from "../../components/data";
 
 const Layout = () => {
   const [orders, setOrders] = useState(null);
   const [users, setUsers] = useState({});
 
   useEffect(() => {
-    const orderApi = "http://127.0.0.1:5000/orders/all_orders";
-    const userApi = "http://127.0.0.1:5000/users/all";
+    const orderApi = `${API}orders/all_orders`;
+    const userApi = `${API}users/all`;
 
     axios
       .get(orderApi)

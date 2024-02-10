@@ -3,7 +3,8 @@ import { Fragment, useContext, useEffect, useState } from "react";
 import { KassaNotice } from "../../images";
 import { useLocation } from "react-router-dom";
 import axios from "axios";
-import { useMyContext } from "../../context/Context";
+import { useMyContext } from "../../context/Context"
+import { API } from "../../components/data";
 
 export default function EndOrder() {
   const location = useLocation();
@@ -11,8 +12,8 @@ export default function EndOrder() {
   const [clientData, setClientData] = useState(null);
   const { setEndData, setEndPopup } = useMyContext();
   useEffect(() => {
-    const orderApi = "http://127.0.0.1:5000/orders/all_orders";
-    const clientApi = "http://127.0.0.1:5000/users/all";
+    const orderApi = `${API}orders/all_orders`;
+    const clientApi = `${API}users/all`;
 
     axios
       .get(orderApi)

@@ -2,6 +2,7 @@ import React, { useEffect, useState } from "react";
 import { List } from "../../images";
 import axios from "axios";
 import { useMyContext } from "../../context/Context";
+import { API } from "../../components/data";
 
 const ListOrders = () => {
   const [orders, setOrders] = useState(null);
@@ -9,8 +10,8 @@ const ListOrders = () => {
   const { f } = useMyContext();
 
   useEffect(() => {
-    const orderApi = "http://127.0.0.1:5000/orders/all_orders";
-    const productsApi = "http://127.0.0.1:5000/products/products_menu";
+    const orderApi = `${API}orders/all_orders`;
+    const productsApi = `${API}products/products_menu`;
 
     axios
       .get(orderApi)

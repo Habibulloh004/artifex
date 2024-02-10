@@ -3,6 +3,7 @@ import { PlusProd } from "../../images";
 import axios from "axios";
 import * as XLSX from "xlsx";
 import { useMyContext } from "../../context/Context";
+import { API } from "../../components/data";
 
 const Remaining = () => {
   const [products, setProducts] = useState(null);
@@ -10,7 +11,7 @@ const Remaining = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/products/products_menu")
+      .get(`${API}products/products_menu`)
       .then((response) => {
         setProducts(response.data);
       })

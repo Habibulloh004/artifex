@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useMyContext } from "../../context/Context";
+import { API } from "../../components/data";
 
 const MonthProfit = () => {
   const { year, month } = useParams();
@@ -13,7 +14,7 @@ const MonthProfit = () => {
       try {
         // Make a GET request using axios
         const response = await axios.get(
-          `http://127.0.0.1:5000/profit/${year}/${month}`
+          `${API}profit/${year}/${month}`
         );
         setData(response.data);
       } catch (error) {

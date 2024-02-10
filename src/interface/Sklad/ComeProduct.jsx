@@ -2,6 +2,7 @@ import React, { useEffect, useRef, useState } from "react";
 import axios from "axios";
 import { Cancel, ComePRod, ComingBox, createData } from "../../images";
 import CurrencyInput from "react-currency-input-field";
+import { API } from "../../components/data";
 
 const ComeProduct = () => {
   const ref = useRef(null);
@@ -19,7 +20,7 @@ const ComeProduct = () => {
     const fetchData = async () => {
       try {
         const productName = await axios.get(
-          "http://127.0.0.1:5000/products/products_menu"
+          `${API}products/products_menu`
         );
         setProduct(productName.data);
       } catch (error) {
@@ -140,7 +141,7 @@ const ComeProduct = () => {
         setProductId(null); // Reset productId after submitting
         setError("");
         await axios.patch(
-          `http://127.0.0.1:5000/products/update_product/${formDataToSubmit.productIdObj}`,
+          `${API}products/update_product/${formDataToSubmit.productIdObj}`,
           requestData,
           {
             headers: {
@@ -179,8 +180,6 @@ const ComeProduct = () => {
   if ((!product && !productId) || product === null) {
     return <p>Loading...</p>;
   }
-
-  console.log(formData);
 
   return (
     <main>

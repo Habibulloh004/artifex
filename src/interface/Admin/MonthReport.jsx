@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Link, useParams } from "react-router-dom";
 import { useMyContext } from "../../context/Context";
 import * as XLSX from "xlsx";
+import { API } from "../../components/data";
 
 const MonthReport = () => {
   const { year, month } = useParams();
@@ -13,7 +14,7 @@ const MonthReport = () => {
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:5000/orders/${year}/${month}`
+          `${API}orders/${year}/${month}`
         );
         setData(response.data);
       } catch (error) {

@@ -3,6 +3,7 @@ import { Cancel, createData } from "../../images";
 import CurrencyInput from "react-currency-input-field";
 import { useMyContext } from "../../context/Context";
 import axios from "axios";
+import { API } from "../../components/data";
 
 const CostRequest = () => {
   const [error, setError] = useState("");
@@ -50,7 +51,7 @@ const CostRequest = () => {
           outgosum: Number(costDataToRequest.sum),
         };
         const response = await axios.post(
-          "http://127.0.0.1:5000/Expenditurepost", // replace with your API endpoint
+          `${API}Expenditurepost`, // replace with your API endpoint
           JSON.stringify(postData),
           {
             headers: {
@@ -160,7 +161,7 @@ const CostData = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:5000/Expenditure");
+        const response = await axios.get(`${API}Expenditure`);
 
         const today = new Date();
         const todayDate = today.toISOString().slice(0, 10); // Sanani yyy-MM-dd formatiga olish

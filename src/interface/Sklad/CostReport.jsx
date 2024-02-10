@@ -1,6 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { useMyContext } from "../../context/Context";
 import axios from "axios";
+import { API } from "../../components/data";
 
 const CostReport = () => {
   const [dataCost, setDataCost] = useState([]);
@@ -12,7 +13,7 @@ const CostReport = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get("http://127.0.0.1:5000/Expenditure");
+        const response = await axios.get(`${API}Expenditure`);
         setDataCost(response.data.reverse());
       } catch (error) {
         console.log(error.message || "An error occurred");

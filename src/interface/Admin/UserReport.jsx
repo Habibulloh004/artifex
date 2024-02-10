@@ -2,6 +2,7 @@ import axios from "axios";
 import React, { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import { useMyContext } from "../../context/Context";
+import { API } from "../../components/data";
 
 const UserReport = () => {
   const { year, month, day, user } = useParams();
@@ -11,15 +12,16 @@ const UserReport = () => {
   const [usersAll, setUsersAll] = useState(null);
   const [productsId, setProductsId] = useState(null);
   const { f, formatPhoneNumber } = useMyContext();
+  
 
   useEffect(() => {
-    const productsApi = "http://127.0.0.1:5000/products/products_menu";
-    const orders = "http://127.0.0.1:5000/orders/all_orders";
+    const productsApi = `${API}products/products_menu`;
+    const orders = `${API}orders/all_orders`;
 
     const fetchData = async () => {
       try {
         const response = await axios.get(
-          `http://127.0.0.1:5000/orders/${year}/${month}/${day}/${user}`
+          `${API}orders/${year}/${month}/${day}/${user}`
         );
         const parsedData = JSON.parse(response.data.products);
         setData(response.data);
@@ -53,7 +55,7 @@ const UserReport = () => {
   }, []);
 
   useEffect(() => {
-    const client = "http://127.0.0.1:5000/users/all";
+    const client = `${API}users/all`;
 
     if (userHis) {
       axios

@@ -4,6 +4,7 @@ import { Base, Cancel, bigBase, createData } from "../../images";
 import CurrencyInput from "react-currency-input-field";
 import PhoneInput from "react-phone-input-2";
 import { useMyContext } from "../../context/Context";
+import { API } from "../../components/data";
 
 const Return = () => {
   const ref = useRef(null);
@@ -37,10 +38,10 @@ const Return = () => {
     const fetchData = async () => {
       try {
         const productName = await axios.get(
-          "http://127.0.0.1:5000/products/products_menu"
+          `${API}products/products_menu`
         );
-        const clientName = await axios.get("http://127.0.0.1:5000/users/all");
-        const vozvratData = await axios.get("http://127.0.0.1:5000/vozvrats");
+        const clientName = await axios.get(`${API}users/all`);
+        const vozvratData = await axios.get(`${API}vozvrats`);
         setClient(clientName.data);
         setProduct(productName.data);
         setVozData(vozvratData.data);
@@ -182,12 +183,12 @@ const Return = () => {
         //   body: JSON.stringify(requestData),
         //   redirect: "follow",
         // };
-        // fetch("http://127.0.0.1:5000/vozvrat", requestOptions)
+        // fetch("${API}vozvrat", requestOptions)
         //   .then((res) => res.json())
         //   .then((result) => console.log(result));
 
         const response = await axios.patch(
-          "http://127.0.0.1:5000/vozvrat", // replace with your API endpoint
+          `${API}vozvrat`, // replace with your API endpoint
           JSON.stringify(requestData),
           {
             headers: {

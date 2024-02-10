@@ -4,6 +4,7 @@ import { useNavigate, useParams } from "react-router-dom";
 import { AddKassa } from "../../images";
 import CurrencyInput from "react-currency-input-field";
 import { useMyContext } from "../../context/Context";
+import { API } from "../../components/data";
 
 const ColorSklad = () => {
   const navigate = useNavigate();
@@ -60,8 +61,8 @@ const ColorSklad = () => {
   );
 
   useEffect(() => {
-    const orderApi = `http://127.0.0.1:5000/orders/all_orders`;
-    const productApi = `http://127.0.0.1:5000/products/products_menu`;
+    const orderApi = `${API}orders/all_orders`;
+    const productApi = `${API}products/products_menu`;
 
     axios
       .get(orderApi)
@@ -346,7 +347,7 @@ const ColorSklad = () => {
           redirect: "follow",
         };
 
-        fetch(`http://127.0.0.1:5000/orders/put_order/${id}`, requestOptions)
+        fetch(`${API}orders/put_order/${id}`, requestOptions)
           .then((response) => response.json())
           .then((result) => {
             console.log(result);

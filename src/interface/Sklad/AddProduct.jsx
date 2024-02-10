@@ -2,6 +2,7 @@
 import React, { useState } from "react";
 import { AddKassa } from "../../images";
 import axios from "axios";
+import { API } from "../../components/data";
 
 const AddProduct = () => {
   const [products, setProducts] = useState([
@@ -63,7 +64,7 @@ const AddProduct = () => {
         formData.append("product_quantity", 0);
         formData.append("product_amount", 0);
         formData.append("product_photo", "");
-        await axios.post("http://127.0.0.1:5000/products/new_product", formData, {
+        await axios.post(`${API}products/new_product`, formData, {
           headers: {
             "Content-Type": "multipart/form-data",
           },

@@ -3,6 +3,7 @@ import { AddKassa, Boss } from "../../images";
 import axios from "axios";
 import { useMyContext } from "../../context/Context";
 import CurrencyInput from "react-currency-input-field";
+import { API } from "../../components/data";
 
 const MenuBoss = () => {
   const [products, setProducts] = useState(null);
@@ -13,7 +14,7 @@ const MenuBoss = () => {
 
   useEffect(() => {
     axios
-      .get("http://127.0.0.1:5000/products/products_menu")
+      .get(`${API}products/products_menu`)
       .then((response) => {
         setProducts(response.data);
         // Initialize prices with the same length as products and set default values
@@ -83,7 +84,7 @@ const MenuBoss = () => {
           formData.append("product_amount", `${product.product_amount}`); // Use the corresponding price from the sanitizedPrices array
 
           return axios.patch(
-            `http://127.0.0.1:5000/products/update_product/${product.id}`,
+            `${API}products/update_product/${product.id}`,
             formData,
             {
               headers: {

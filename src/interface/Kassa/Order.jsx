@@ -4,6 +4,8 @@ import axios from "axios";
 import PhoneInput from "react-phone-input-2";
 import { useMyContext } from "../../context/Context";
 import CurrencyInput from "react-currency-input-field";
+import { API } from "../../components/data";
+
 
 const Order = () => {
   //   const Products = () => {
@@ -135,9 +137,9 @@ const Order = () => {
     const fetchData = async () => {
       try {
         const productGet = await axios.get(
-          "http://127.0.0.1:5000/products/products_menu"
+          `${API}products/products_menu`
         );
-        const clientGet = await axios.get("http://127.0.0.1:5000/users/all");
+        const clientGet = await axios.get(`${API}users/all`);
         setProduct(
           productGet.data.filter(
             (prod) => prod.product_quantity > 0 && prod.product_name.length >= 3
@@ -271,7 +273,7 @@ const Order = () => {
     formdata.append("pay_method", "ДОЛГ");
 
     try {
-      await axios.post("http://127.0.0.1:5000/orders/new_order", formdata, {
+      await axios.post(`${API}orders/new_order`, formdata, {
         headers: {
           "Content-Type": "multipart/form-data",
         },

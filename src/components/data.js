@@ -17,6 +17,8 @@ import {
   ProfitSvg,
 } from "../images";
 
+export const API = "http://127.0.0.1:5000/"
+
 const users = [
   { role: "kassa", login: "kassauser", password: "kassapass" },
   { role: "boss", login: "bossuser", password: "bosspass" },
@@ -82,7 +84,7 @@ const clientData = [
 const clientPath = [
   {
     id: 1,
-    url: "http://127.0.0.1:5000/users/all",
+    url: `${API}users/all`,
     path: "all-client",
     icon: All,
     title: "Все клиенты",
@@ -90,7 +92,7 @@ const clientPath = [
   },
   {
     id: 2,
-    url: "http://127.0.0.1:5000/users/dolg_list",
+    url: `${API}users/dolg_list`,
     path: "wait-client",
     icon: Wait,
     title: "Долговые клиенты",
@@ -98,7 +100,7 @@ const clientPath = [
   },
   {
     id: 3,
-    url: "http://127.0.0.1:5000/users/blacklist_users",
+    url: `${API}users/blacklist_users`,
     path: "spam-client",
     icon: Spam,
     title: "Чёрный список",
