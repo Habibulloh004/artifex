@@ -7,7 +7,9 @@ export const MyContextProvider = ({ children }) => {
   const [endData, setEndData] = useState(null);
   const [endPopup, setEndPopup] = useState(false);
   const [userHistory, setUserHistory] = useState(null);
-  const f = new Intl.NumberFormat("ru-RU");
+  const [reconUser, setReconUser] = useState(null);
+  const f = new Intl.NumberFormat("ru-Ru");
+
   function formatPhoneNumber(phoneNumber) {
     const numericPhoneNumber = phoneNumber.replace(/\D/g, "");
 
@@ -32,7 +34,9 @@ export const MyContextProvider = ({ children }) => {
         userHistory,
         setUserHistory,
         f,
-        formatPhoneNumber
+        formatPhoneNumber,
+        reconUser,
+        setReconUser,
       }}
     >
       {children}

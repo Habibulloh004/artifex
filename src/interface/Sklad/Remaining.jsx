@@ -62,14 +62,14 @@ const Remaining = () => {
               {Array.isArray(products) &&
                 products.map((prod, index) => (
                   <tr key={index} className="text-sm">
-                    <td className="border py-2">{f.format(index + 1)}</td>
+                    <td className="border py-2">{f.format(index + 1).replaceAll(",", ".")}</td>
                     <td className="border py-2">{prod.product_name}</td>
                     <td className="border py-2">
                       {f.format(
                         prod.product_name.length >= 3
                           ? Number(prod.product_quantity) / 1000
                           : Number(prod.product_quantity)
-                      )}{" "}
+                      ).replaceAll(",", ".")}{" "}
                       {prod.product_name.length >= 3 ? "кг." : "г."}
                     </td>
                   </tr>

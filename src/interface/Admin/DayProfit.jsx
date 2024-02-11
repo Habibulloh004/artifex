@@ -64,32 +64,32 @@ const DayProfit = () => {
                     </td>
                     <td className="border border-secondary py-1">
                       {item.product_name.length >= 3
-                        ? f.format(item.quantity / 1000)
-                        : f.format(item.quantity)}{" "}
+                        ? f.format(item.quantity / 1000).replaceAll(",", ".")
+                        : f.format(item.quantity).replaceAll(",", ".")}{" "}
                       {item.product_name.length >= 3 ? "кг" : "г"}
                     </td>
                     <td className="border border-secondary py-1">
                       {item.product_name.length >= 3
-                        ? f.format(item.product_amount)
-                        : f.format(item.product_amount)}{" "}
+                        ? f.format(item.product_amount).replaceAll(",", ".")
+                        : f.format(item.product_amount).replaceAll(",", ".")}{" "}
                       {item.product_name.length >= 3 ? "сум" : "USD"}
                     </td>
                     <td className="border border-secondary py-1">
                       {item.product_name.length >= 3
-                        ? f.format(item.pricekg)
-                        : f.format(item.pricekg)}{" "}
+                        ? f.format(item.pricekg).replaceAll(",", ".")
+                        : f.format(item.pricekg).replaceAll(",", ".")}{" "}
                       {item.product_name.length >= 3 ? "сум" : "USD"}
                     </td>
                     <td className="border border-secondary py-1">
                       {item.product_name.length >= 3
-                        ? f.format(item.product_amount)
-                        : f.format(item.product_amount)}{" "}
+                        ? f.format(item.product_amount).replaceAll(",", ".")
+                        : f.format(item.product_amount).replaceAll(",", ".")}{" "}
                       {item.product_name.length >= 3 ? "сум" : "USD"}
                     </td>
                     <td className="border border-secondary py-1">
                       {item.product_name.length >= 3
-                        ? f.format(item.profitsum)
-                        : f.format(item.profitdol)}{" "}
+                        ? f.format(item.profitsum).replaceAll(",", ".")
+                        : f.format(item.profitdol).replaceAll(",", ".")}{" "}
                       {item.product_name.length >= 3 ? "сум" : "USD"}
                     </td>
                   </tr>
@@ -116,15 +116,15 @@ const DayProfit = () => {
             <tbody>
               <tr>
                 <td className="border border-secondary py-1 px-2">сум</td>
-                <td className="border border-secondary py-1 px-2">{f.format(data.total_product_amountsum)}</td>
-                <td className="border border-secondary py-1 px-2">{f.format(data.priblsum)}</td>
-                <td className="border border-secondary py-1 px-2">{f.format(data.total_profit_sum)}</td>
+                <td className="border border-secondary py-1 px-2">{f.format(data.total_product_amountsum).replaceAll(",", ".")}</td>
+                <td className="border border-secondary py-1 px-2">{f.format(data.priblsum).replaceAll(",", ".")}</td>
+                <td className="border border-secondary py-1 px-2">{f.format(data.total_profit_sum).replaceAll(",", ".")}</td>
               </tr>
               <tr>
                 <td className="border border-secondary py-1 px-2">USD</td>
-                <td className="border border-secondary py-1 px-2">{f.format(data.total_product_amountdol)}</td>
-                <td className="border border-secondary py-1 px-2">{f.format(data.pribldol)}</td>
-                <td className="border border-secondary py-1 px-2">{f.format(data.total_profit_dol)}</td>
+                <td className="border border-secondary py-1 px-2">{f.format(data.total_product_amountdol).replaceAll(",", ".")}</td>
+                <td className="border border-secondary py-1 px-2">{f.format(data.pribldol).replaceAll(",", ".")}</td>
+                <td className="border border-secondary py-1 px-2">{f.format(data.total_profit_dol).replaceAll(",", ".")}</td>
               </tr>
             </tbody>
           </table>

@@ -13,9 +13,7 @@ const MonthReport = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const response = await axios.get(
-          `${API}orders/${year}/${month}`
-        );
+        const response = await axios.get(`${API}orders/${year}/${month}`);
         setData(response.data);
       } catch (error) {
         console.log(error.message);
@@ -41,7 +39,7 @@ const MonthReport = () => {
     XLSX.writeFile(wb, "ordersmonth.xlsx");
   };
 
-  const tableHead = ["День", "Кол. Заказов", "Кол. продаж", "Продажи"];
+  const tableHead = ["День", "Кол. Заказов", "Продажи"];
 
   if (!data) {
     return <p>Loading...</p>;
@@ -71,15 +69,32 @@ const MonthReport = () => {
                   {idx + 1}
                 </td>
                 <td className="py-1 border border-forth">
-                  {f.format(item.quantity_orders)}
+                  {f.format(item.quantity_orders).replaceAll(",", ".")}
                 </td>
                 <td className="py-1 border border-forth">
-                  {f.format(item.sold_products)}
-                </td>
-                <td className="py-1 border border-forth">
-                  {item.all_priceDol ? f.format(item.all_priceDol) : 0} USD{" "}
+                  {item.all_priceDol
+                    ? f.format(item.all_priceDol).replaceAll(",", ".")
+                    : 0}{" "}
+                  USD <br />
+                  {item.all_priceSum
+                    ? f.format(item.all_priceSum).replaceAll(",", ".")
+                    : 0}{" "}
+                  сум
                   <br />
-                  {item.all_priceSum ? f.format(item.all_priceSum) : 0} сум
+                  {item.total_card
+                    ? f.format(item.total_card).replaceAll(",", ".")
+                    : 0}{" "}
+                  карта
+                  <br />
+                  {item.total_terminal
+                    ? f.format(item.total_terminal).replaceAll(",", ".")
+                    : 0}{" "}
+                  терминал
+                  <br />
+                  {item.total_transfers
+                    ? f.format(item.total_transfers).replaceAll(",", ".")
+                    : 0}{" "}
+                  перчисления
                 </td>
               </tr>
             ))}

@@ -33,7 +33,6 @@ const Header = () => {
                 </Link>
               </li>
             ))}
-            {/* <Example /> */}
           </ul>
           <span
             onClick={() => {

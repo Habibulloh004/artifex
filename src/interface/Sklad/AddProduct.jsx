@@ -43,7 +43,6 @@ const AddProduct = () => {
 
   const onSubmitForm = async (e) => {
     e.preventDefault();
-    console.log(products);
 
     // Check if any field in any row is empty
     const isAnyFieldEmpty = products.some((row) =>

@@ -35,8 +35,14 @@ import AddProdSvg from "./AddProdSvg.svg";
 import KassaNotice from "./KassaNotice.svg";
 import Cost from "./Cost.svg";
 import ProfitSvg from "./ProfitSvg.svg";
+import ReconSvg from "./ReconSvg.svg";
+import RemoveProdSvg from "./RemoveProdSvg.svg";
+import RemoveProdBig from "./RemoveProdBig.svg";
 
 export {
+  RemoveProdSvg,
+  RemoveProdBig,
+  ReconSvg,
   ProfitSvg,
   Cost,
   KassaNotice,

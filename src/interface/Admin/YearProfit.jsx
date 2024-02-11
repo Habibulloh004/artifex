@@ -70,20 +70,20 @@ const YearProfit = () => {
               <tr className="relative" key={id}>
                 <td className="border border-secondary py-1">{id}</td>
                 <td className="border border-secondary py-1">
-                  {f.format(item.profit_dol)} USD <br />{" "}
-                  {f.format(item.profit_sum)} сум
+                  {f.format(item.profit_dol).replaceAll(",", ".")} USD <br />{" "}
+                  {f.format(item.profit_sum).replaceAll(",", ".")} сум
                   <Link
                     className="w-full h-full absolute left-0 top-0 "
                     to={`/admin/profit/${year}/${id}`}
                   ></Link>
                 </td>
                 <td className="border border-secondary py-1">
-                  {f.format(item.total_product_amountdol)} USD <br />{" "}
-                  {f.format(item.total_product_amountsum)} сум
+                  {f.format(item.total_product_amountdol).replaceAll(",", ".")} USD <br />{" "}
+                  {f.format(item.total_product_amountsum).replaceAll(",", ".")} сум
                 </td>
                 <td className="border border-secondary py-1">
-                  {f.format(item.total_profit_dol)} USD <br />{" "}
-                  {f.format(item.total_profit_sum)} сум
+                  {f.format(item.total_profit_dol).replaceAll(",", ".")} USD <br />{" "}
+                  {f.format(item.total_profit_sum).replaceAll(",", ".")} сум
                 </td>
               </tr>
             ))}

@@ -74,8 +74,8 @@ const CostReport = () => {
                 <tr key={idx}>
                   <td className="border border-secondary py-1">{cost.id}</td>
                   <td className="border border-secondary py-1">
-                    {f.format(cost.outgodol)} USD <br />
-                    {f.format(cost.outgosum)} сум
+                    {f.format(cost.outgodol).replaceAll(",", ".")} USD <br />
+                    {f.format(cost.outgosum).replaceAll(",", ".")} сум
                   </td>
                   <td className="border border-secondary py-1">
                     {cost.description}
@@ -88,16 +88,16 @@ const CostReport = () => {
               ))}
             </tbody>
           </table>
-          <div className="flex flex-col w-2/5">
+          <div className="flex flex-col w-2/4">
             <ul className="flex items-center gap-3 mt-3 justify-between">
               <li className="py-1">Стоимость сегодня:</li>
 
               <li className="flex gap-2">
                 <span className="py-1 px-3 bg-forth rounded-md">
-                  USD: {allTodayDolPrice}
+                  USD: {f.format(allTodayDolPrice).replaceAll(",", ".")}
                 </span>
                 <span className="py-1 px-3 bg-forth rounded-md">
-                  Cум: {allTodaySumPrice}
+                  Cум: {f.format(allTodaySumPrice).replaceAll(",", ".")}
                 </span>
               </li>
             </ul>
@@ -106,10 +106,10 @@ const CostReport = () => {
 
               <li className="flex gap-2">
                 <span className="py-1 px-3 bg-forth rounded-md">
-                  USD: {allDolPrice}
+                  USD: {f.format(allDolPrice).replaceAll(",", ".")}
                 </span>
                 <span className="py-1 px-3 bg-forth rounded-md">
-                  Cум: {allSumPrice}
+                  Cум: {f.format(allSumPrice).replaceAll(",", ".")}
                 </span>
               </li>
             </ul>

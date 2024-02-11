@@ -27,7 +27,7 @@ const YearReport = () => {
     fetchData();
   }, []);
 
-  const tableHead = ["Месяц", "Кол. Заказов", "Кол. продаж", "Продажи"];
+  const tableHead = ["Месяц", "Кол. Заказов", "Продажи"];
   const months = [
     "январь",
     "февраль",
@@ -59,6 +59,7 @@ const YearReport = () => {
     XLSX.utils.book_append_sheet(wb, ws, "OrdersYear");
     XLSX.writeFile(wb, "ordersyear.xlsx");
   };
+  console.log(data);
   if (!data) {
     return <p>Loading...</p>;
   }
@@ -88,15 +89,18 @@ const YearReport = () => {
                   ></Link>
                 </td>
                 <td className="py-1 border border-forth">
-                  {f.format(item.quantity_orders)}
+                  {f.format(item.quantity_orders).replaceAll(",", ".")}
                 </td>
                 <td className="py-1 border border-forth">
-                  {f.format(item.sold_products)}
-                </td>
-                <td className="py-1 border border-forth">
-                  {item.all_priceDol ? f.format(item.all_priceDol) : 0} USD{" "}
+                  {item.all_priceDol ? f.format(item.all_priceDol).replaceAll(",", ".") : 0} USD{" "}
                   <br />
-                  {item.all_priceSum ? f.format(item.all_priceSum) : 0} сум
+                  {item.all_priceSum ? f.format(item.all_priceSum).replaceAll(",", ".") : 0} сум
+                  <br />
+                  {item.total_card ? f.format(item.total_card).replaceAll(",", ".") : 0} карта
+                  <br />
+                  {item.total_terminal ? f.format(item.total_terminal).replaceAll(",", ".") : 0} терминал
+                  <br />
+                  {item.total_transfers ? f.format(item.total_transfers).replaceAll(",", ".") : 0} перчисления
                 </td>
               </tr>
             ))}

@@ -17,7 +17,7 @@ const ColorSklad = () => {
   const [selectedProductIndex, setSelectedProductIndex] = useState(0);
   const [selectedProduct, setSelectedProduct] = useState(null);
   const [inputValues, setInputValues] = useState([]);
-  const [error, setError] = useState("")
+  const [error, setError] = useState("");
   const [allPrice, setAllPrice] = useState(0);
   const [orderTotalPrice, setOrderTotalPrice] = useState(0);
   const [orderProductPrice, setOrderProductPrice] = useState(0);
@@ -155,13 +155,23 @@ const ColorSklad = () => {
           if (index === selectedProductIndex) {
             const updatedReceptForIndex = item.recept
               .filter((_, index) => !filteredIndexes.includes(index))
+              .map((item, index) => ({
+                ...item,
+                price: parseFloat(
+                  priceRef.current[index].current.innerText
+                    .replaceAll(",", ".")
+                    .replace(/\$/g, "")
+                ), // Valyuta belgisini olib tashlash
+              }))
               .concat(
                 filteredIndexes.map((index) => ({
                   product_id: Number(nameRefs.current[index].current.innerText),
                   amount: Number(quantityRef.current[index].current.value),
-                  price: Number(
-                    priceRef.current[index].current.innerText.slice(0, -1)
-                  ),
+                  price: parseFloat(
+                    priceRef.current[index].current.innerText
+                      .replaceAll(",", ".")
+                      .replace(/\$/g, "")
+                  ), // Valyuta belgisini olib tashlash
                 }))
               );
             return { ...item, recept: updatedReceptForIndex };
@@ -188,13 +198,13 @@ const ColorSklad = () => {
       <li className="w-[50%] flex">
         <p> Количество:</p>{" "}
         <span className="ml-auto bg-fifth w-[60%] px-2 py-1 rounded-md">
-          {f.format(product.amount / 1000)} кг
+          {f.format(product.amount / 1000).replaceAll(",", ".")} кг
         </span>
       </li>
       <li className="w-[50%] flex">
         <p> Цена:</p>{" "}
         <span className="ml-auto bg-fifth w-[60%] px-2 py-1 rounded-md">
-          {f.format(product.price * 1000)} сум
+          {f.format(product.price * 1000).replaceAll(",", ".")} сум
         </span>
       </li>
     </ul>
@@ -207,7 +217,7 @@ const ColorSklad = () => {
     }
     newInputValues[rowIndex][columnName] = value;
     setInputValues(newInputValues);
-    setError("")
+    setError("");
   };
 
   useEffect(() => {
@@ -304,13 +314,23 @@ const ColorSklad = () => {
           if (index === selectedProductIndex) {
             const updatedReceptForIndex = item.recept
               .filter((_, index) => !filteredIndexes.includes(index))
+              .map((item, index) => ({
+                ...item,
+                price: parseFloat(
+                  priceRef.current[index].current.innerText
+                    .replaceAll(",", ".")
+                    .replace(/\$/g, "")
+                ), // Valyuta belgisini olib tashlash
+              }))
               .concat(
                 filteredIndexes.map((index) => ({
                   product_id: Number(nameRefs.current[index].current.innerText),
                   amount: Number(quantityRef.current[index].current.value),
-                  price: Number(
-                    priceRef.current[index].current.innerText.slice(0, -1)
-                  ),
+                  price: parseFloat(
+                    priceRef.current[index].current.innerText
+                      .replaceAll(",", ".")
+                      .replace(/\$/g, "")
+                  ), // Valyuta belgisini olib tashlash
                 }))
               );
             return { ...item, recept: updatedReceptForIndex };
@@ -331,6 +351,7 @@ const ColorSklad = () => {
           };
           reqArray.push(formDataPut);
         }
+        console.log(reqArray);
 
         const reqForm = {
           products: reqArray,
@@ -359,7 +380,7 @@ const ColorSklad = () => {
         return updatedRecept;
       });
       navigate("/sklad/request");
-      window.location.reload()
+      window.location.reload();
     }
   };
 
@@ -424,7 +445,7 @@ const ColorSklad = () => {
                       style={{ background: item.product_color }}
                       key={idx}
                     >
-                      {f.format(item.product_price)}$
+                      {f.format(item.product_price).replaceAll(",", ".")}$
                     </td>
                   ))}
                 </tr>
@@ -473,7 +494,7 @@ const ColorSklad = () => {
                             ? ""
                             : `${f.format(
                                 inputValues[idx]?.quantity * item.product_amount
-                              )}$`
+                              ).replaceAll(",", ".")}$`
                         }
                         disabled
                       />
@@ -491,7 +512,7 @@ const ColorSklad = () => {
                         (total, currentValue) => total + currentValue,
                         0
                       )
-                    )}
+                    ).replaceAll(",", ".")}
                     $
                   </td>
                 </tr>
@@ -530,7 +551,7 @@ const ColorSklad = () => {
               <span>
                 Общая сумма товара{" "}
                 <p className="ml-3 py-1 px-4 bg-forth rounded-md text-center inline">
-                  {f.format(orderProductPrice)} сум
+                  {f.format(orderProductPrice).replaceAll(",", ".")} сум
                 </p>
               </span>
               <span>
@@ -542,7 +563,7 @@ const ColorSklad = () => {
                         (total, currentValue) => total + currentValue,
                         0
                       )
-                  )}
+                  ).replaceAll(",", ".")}
                   $
                 </p>
               </span>

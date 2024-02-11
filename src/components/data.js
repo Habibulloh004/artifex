@@ -15,9 +15,12 @@ import {
   AddProdSvg,
   Cost,
   ProfitSvg,
+  ReconSvg,
+  RemoveProdSvg
 } from "../images";
+import RemoveProd from "../interface/Sklad/RemoveProd";
 
-export const API = "http://127.0.0.1:5000/"
+export const API = "http://127.0.0.1:5000/";
 
 const users = [
   { role: "kassa", login: "kassauser", password: "kassapass" },
@@ -41,16 +44,18 @@ const navLinks = [
     items: [
       { name: "Отчёты", path: "/reports", icon: Report },
       { name: "Прибыль", path: "/profit", icon: ProfitSvg },
+      { name: "Ак Сверка", path: "/reconciliation", icon: ReconSvg },
     ],
   },
   {
     role: "/sklad",
     items: [
       { name: "Запросы", path: "/request", icon: Notice },
-      { name: "Список заказов", path: "/orders", icon: List },
+      // { name: "Список заказов", path: "/orders", icon: List },
       { name: "Приход", path: "/coming", icon: ComePRod },
       { name: "Остаток товаров", path: "/remaining", icon: PlusProd },
       { name: "Добавление товаров", path: "/add-product", icon: AddProdSvg },
+      { name: "Удаленные товар", path: "/remove-product", icon: RemoveProdSvg },
       { name: "История расходов", path: "/cost-report", icon: Cost },
     ],
   },

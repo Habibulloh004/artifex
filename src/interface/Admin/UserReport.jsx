@@ -95,7 +95,7 @@ const UserReport = () => {
             <tbody>
               <tr>
                 <td className="py-1 border-2 border-third border-third-forth">
-                  {f.format(userHis?.order_id)}
+                  {f.format(userHis?.order_id).replaceAll(",", ".")}
                 </td>
                 <td className="py-1 border-2 border-third border-third-forth">
                   {usersAll?.phone && formatPhoneNumber(usersAll?.phone)}
@@ -129,7 +129,7 @@ const UserReport = () => {
                       </td>
 
                       <td className="border-2 border-third w-[20%]">
-                        {f.format(item?.amount / 1000)} кг
+                        {f.format(item?.amount / 1000).replaceAll(",", ".")} кг
                       </td>
 
                       <td className="border-2 border-third w-[30%]">
@@ -215,16 +215,16 @@ const UserReport = () => {
                 <tr>
                   <td className="border-2 border-third">Общые сумма заказа</td>
                   <td className="border-2 border-third px-5">
-                    {data.all_priceDol ? f.format(data.all_priceDol) : 0} USD{" "}
+                    {data.all_priceDol ? f.format(data.all_priceDol).replaceAll(",", ".") : 0} USD{" "}
                     <br />
-                    {data.all_priceSum ? f.format(data.all_priceSum) : 0} сум
+                    {data.all_priceSum ? f.format(data.all_priceSum).replaceAll(",", ".") : 0} сум
                   </td>
                 </tr>
                 <tr>
                   <td className="border-2 border-third">Долг</td>
                   <td className="border-2 border-third px-5">
-                    {data.dolgDol ? f.format(data.dolgDol) : 0} USD <br />
-                    {data.dolgSum ? f.format(data.dolgSum) : 0} сум
+                    {data.dolgDol ? f.format(data.dolgDol).replaceAll(",", ".") : 0} USD <br />
+                    {data.dolgSum ? f.format(data.dolgSum).replaceAll(",", ".") : 0} сум
                   </td>
                 </tr>
               </tbody>

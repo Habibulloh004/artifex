@@ -95,7 +95,7 @@ const ListOrders = () => {
                 {orders?.map((order, idx) => (
                   <tr key={idx} className="text-center">
                     <td className="p-2 text-sm border border-forth">
-                      {f.format(idx + 1)}
+                      {f.format(idx + 1).replaceAll(",", ".")}
                     </td>
                     <td className="p-2 text-sm border border-forth">
                       {order.products.map((product, i) => (
@@ -122,7 +122,7 @@ const ListOrders = () => {
                       ))}
                     </td>
                     <td className="p-2 text-sm border border-forth">
-                      {f.format(order.order_id)}
+                      {f.format(order.order_id).replaceAll(",", ".")}
                     </td>
                     <td className="p-2 text-sm border border-forth">
                       {order.products.map((product, i) => (
@@ -141,7 +141,7 @@ const ListOrders = () => {
                               (recept, indexR) =>
                                 recept !== "" && (
                                   <span key={indexR} className="block">
-                                    {f.format(recept.amount)} г
+                                    {f.format(recept.amount).replaceAll(",", ".")} г
                                   </span>
                                 )
                             )}
@@ -154,8 +154,8 @@ const ListOrders = () => {
                       ))}
                     </td>
                     <td className="p-2 text-sm border border-forth">
-                      {f.format(Number(order.all_priceDol))} USD <br />
-                      {f.format(Number(order.all_priceSum))} сум
+                      {f.format(Number(order.all_priceDol)).replaceAll(",", ".")} USD <br />
+                      {f.format(Number(order.all_priceSum)).replaceAll(",", ".")} сум
                     </td>
                     <td className="p-2 text-sm border border-forth">
                       {Number(order.all_priceDol) > 0 ? "Готово" : "Ожидание"}

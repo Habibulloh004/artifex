@@ -57,21 +57,21 @@ const MonthProfit = () => {
                 </td>
                 <td className="py-1 border border-forth">
                   {item.detailed_profits && item.detailed_profits.length > 0
-                    ? f.format(item.total_product_amountdol)
+                    ? f.format(item.total_product_amountdol).replaceAll(",", ".")
                     : 0}{" "}
                   USD <br />
                   {item.detailed_profits && item.detailed_profits.length > 0
-                    ? f.format(item.total_product_amountsum)
+                    ? f.format(item.total_product_amountsum).replaceAll(",", ".")
                     : 0}{" "}
                   сум
                 </td>
                 <td className="py-1 border border-forth">
                   {item.detailed_profits && item.detailed_profits.length > 0
-                    ? f.format(item.total_profit_dol)
+                    ? f.format(item.total_profit_dol).replaceAll(",", ".")
                     : 0}{" "}
                   USD <br />
                   {item.detailed_profits && item.detailed_profits.length > 0
-                    ? f.format(item.total_profit_sum)
+                    ? f.format(item.total_profit_sum).replaceAll(",", ".")
                     : 0}{" "}
                   сум
                 </td>

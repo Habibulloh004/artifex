@@ -37,9 +37,7 @@ const Return = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const productName = await axios.get(
-          `${API}products/products_menu`
-        );
+        const productName = await axios.get(`${API}products/products_menu`);
         const clientName = await axios.get(`${API}users/all`);
         const vozvratData = await axios.get(`${API}vozvrats`);
         setClient(clientName.data);
@@ -159,6 +157,7 @@ const Return = () => {
         setError("Пожалуйста, заполните все необходимые поля");
         return;
       } else {
+        console.log(retReqArray);
         const newArray = retReqArray.map(
           ({ productId, quantity, sum, dollar }) => ({
             product_id: Number(productId),
@@ -245,7 +244,7 @@ const Return = () => {
       name: "",
       quantity: "",
     });
-    setRetReqArray([])
+    setRetReqArray([]);
   };
 
   const addRow = () => {
@@ -275,7 +274,6 @@ const Return = () => {
     });
     setSelectedProduct("");
   };
-
 
   if ((!product && !client) || product === null || client === null) {
     return <p>Loading...</p>;
@@ -347,7 +345,9 @@ const Return = () => {
                               return (
                                 <span key={idx}>
                                   <span>
-                                    {f.format(itVoz.quantity)}{" "}
+                                    {f
+                                      .format(itVoz.quantity)
+                                      .replaceAll(",", ".")}{" "}
                                     {findProd.product_name.length >= 3
                                       ? "кг"
                                       : "г"}
@@ -361,9 +361,16 @@ const Return = () => {
                             {item.products.map((itVoz, idx) => {
                               return (
                                 <span key={idx}>
-                                  <span>{f.format(itVoz.summaDol)}</span> USD{" "}
+                                  <span>
+                                    {f
+                                      .format(itVoz.summaDol)
+                                      .replaceAll(",", ".")}
+                                  </span>{" "}
+                                  USD{" "}
                                   <span key={idx}>
-                                    {f.format(itVoz.summaSum)}
+                                    {f
+                                      .format(itVoz.summaSum)
+                                      .replaceAll(",", ".")}
                                   </span>{" "}
                                   сум <br />
                                 </span>
@@ -374,9 +381,16 @@ const Return = () => {
                             {item.products.map((itVoz, idx) => {
                               return (
                                 <span key={idx}>
-                                  <span>{f.format(itVoz.summaDol)}</span> USD{" "}
+                                  <span>
+                                    {f
+                                      .format(itVoz.summaDol)
+                                      .replaceAll(",", ".")}
+                                  </span>{" "}
+                                  USD{" "}
                                   <span key={idx}>
-                                    {f.format(itVoz.summaSum)}
+                                    {f
+                                      .format(itVoz.summaSum)
+                                      .replaceAll(",", ".")}
                                   </span>{" "}
                                   сум <br />
                                 </span>
@@ -522,34 +536,46 @@ const Return = () => {
                   +
                 </button>
                 {retReqArray && (
-                  <ul>
+                  <ul className="flex flex-col gap-2">
                     {retReqArray.map((item, i) => {
                       const findProd = product.find(
                         (items) => items.id === item.productId
                       );
+                      const handleDelete = () => {
+                        // Delete button bosilganda ushbu mahsulotni olib tashlash logikasi
+                        const filteredArray = retReqArray.filter(
+                          (el) => el.productId !== item.productId
+                        );
+                        // filteredArray ning o'zgarishlarni o'zgartirish uchun context yoki statega setRetReqArray bilan yuborilishi kerak
+                        setRetReqArray(filteredArray);
+                      };
                       return (
-                        <li className="w-[80%] flex justify-between items-center gap-3" key={i}>
+                        <li
+                          className="w-[80%] flex justify-between items-center gap-3"
+                          key={i}
+                        >
                           <span>
                             {i + 1}.{" "}
                             {findProd ? findProd.product_name : item.name}
                           </span>{" "}
                           <span>
-                            {f.format(item.quantity)}{" "}
+                            {f.format(item.quantity).replaceAll(",", ".")}{" "}
                             {findProd.product_name.length >= 3 ||
                             item.name.length >= 3
                               ? "кг"
                               : "г"}
                           </span>
-
                           <span>
-                            {
-                              item.dollar === undefined ? 0 : f.format(item.dollar) 
-                            } USD
-                            {" "}{" | "}{" "}
-                            {
-                              item.sum === undefined ? 0 :f.format(item.sum)
-                            } сум
+                            {item.dollar === undefined
+                              ? 0
+                              : f.format(item.dollar).replaceAll(",", ".")}{" "}
+                            USD {" | "}{" "}
+                            {item.sum === undefined
+                              ? 0
+                              : f.format(item.sum).replaceAll(",", ".")}{" "}
+                            сум
                           </span>
+                          <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={handleDelete}>Delete</button>
                         </li>
                       );
                     })}

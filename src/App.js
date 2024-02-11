@@ -37,6 +37,9 @@ import axios from "axios";
 import CurrencyInput from "react-currency-input-field";
 import CostReport from "./interface/Sklad/CostReport";
 import { API } from "./components/data";
+import Reconciliation from "./interface/Admin/Reconciliation";
+import RecUser from "./interface/Admin/RecUser";
+import RemoveProd from "./interface/Sklad/RemoveProd";
 
 function App() {
   const location = useLocation();
@@ -137,7 +140,6 @@ function App() {
 
     const sumData = cash + terminal + card + transfers;
     setAllSumData(sumData);
-
   }, [paymentData]);
 
   const submitPaid = async (e) => {
@@ -150,15 +152,11 @@ function App() {
         Number(paymentData.card || 0) +
         Number(paymentData.terminal || 0) +
         Number(paymentData.transfers || 0),
-      payMethod: [
-        {
-          dollar: Number(paymentData.dollar || 0),
-          cash: Number(paymentData.cash || 0),
-          terminal: Number(paymentData.terminal || 0),
-          card: Number(paymentData.card || 0),
-          transfers: Number(paymentData.transfers || 0),
-        },
-      ],
+      dollar: Number(paymentData.dollar || 0),
+      cash: Number(paymentData.cash || 0),
+      terminal: Number(paymentData.terminal || 0),
+      card: Number(paymentData.card || 0),
+      transfers: Number(paymentData.transfers || 0),
     };
     console.log(raw);
 
@@ -178,7 +176,7 @@ function App() {
       redirect: "follow",
     };
 
-    const apiURL = `${API}paymethod/` + endData.order_id;
+    const apiURL = `${API}paymethod/${endData.order_id}`;
 
     try {
       // Fetch so'rovni yuborish
@@ -269,13 +267,17 @@ function App() {
               path="/sklad/request/:id"
               element={<PrivateRoute element={<ColorSklad />} />}
             />
-            <Route
+            {/* <Route
               path="/sklad/orders"
               element={<PrivateRoute element={<ListOrders />} />}
-            />
+            /> */}
             <Route
               path="/sklad/add-product"
               element={<PrivateRoute element={<AddProduct />} />}
+            />
+            <Route
+              path="/sklad/remove-product"
+              element={<PrivateRoute element={<RemoveProd />} />}
             />
             <Route
               path="/sklad/coming"
@@ -292,6 +294,14 @@ function App() {
             <Route
               path="/admin"
               element={<PrivateRoute element={<Admin />} />}
+            />
+            <Route
+              path="/admin/reconciliation"
+              element={<PrivateRoute element={<Reconciliation />} />}
+            />
+            <Route
+              path="/admin/reconciliation/recuser"
+              element={<PrivateRoute element={<RecUser />} />}
             />
             <Route
               path="/admin/reports"
@@ -361,10 +371,10 @@ function App() {
               <li className="text-xl font-semibold">Сумма заказа</li>
               <li className="mt-3 flex gap-4 w-full justify-around">
                 <span className="py-1 px-2 bg-fifth rounded-md">
-                  {f.format(orderData?.all_priceSum)} сум
+                  {f.format(orderData?.all_priceSum).replaceAll(",", ".")} сум
                 </span>
                 <span className="py-1 px-2 bg-fifth rounded-md">
-                  {f.format(orderData?.all_priceDol)} USD
+                  {f.format(orderData?.all_priceDol).replaceAll(",", ".")} USD
                 </span>
               </li>
               <li className="w-full py-1 rounded-md text-xl">Оплата</li>

@@ -217,8 +217,8 @@ const CostData = () => {
             <tr key={idx}>
               <td className="border border-secondary py-1">{cost.id}</td>
               <td className="border border-secondary py-1">
-                {f.format(cost.outgodol)} USD <br />
-                {f.format(cost.outgosum)} сум
+                {f.format(cost.outgodol).replaceAll(",", ".")} USD <br />
+                {f.format(cost.outgosum).replaceAll(",", ".")} сум
               </td>
               <td className="border border-secondary py-1">
                 {cost.description}

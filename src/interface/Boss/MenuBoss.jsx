@@ -163,7 +163,7 @@ const MenuBoss = () => {
                         />
                       </td>
                       <td className="border py-2">
-                        {f.format(prod.product_quantity)}
+                        {f.format(prod.product_quantity).replaceAll(",", ".")}
                       </td>
                     </tr>
                   ))

@@ -88,7 +88,7 @@ const AllClients = () => {
                   .map((client, idx) => (
                     <tr key={idx} className="text-center">
                       <td className="p-2 text-sm border border-secondary">
-                        {f.format(idx + 1)}
+                        {f.format(idx + 1).replaceAll(",", ".")}
                       </td>
                       <td className="p-2 text-sm border border-secondary">
                         {client.id}
@@ -103,8 +103,8 @@ const AllClients = () => {
                         {location.pathname === "/kassa/clients/all-client" ? (
                           client.year
                         ) : (
-                          <>{f.format(client.amountDol)} USD <br />
-                            {f.format(client.amountSum)} сум
+                          <>{f.format(client.amountDol).replaceAll(",", ".")} USD <br />
+                            {f.format(client.amountSum).replaceAll(",", ".")} сум
                           </>
                         )}
                       </td>
