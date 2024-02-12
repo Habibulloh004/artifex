@@ -114,6 +114,8 @@ const MenuBoss = () => {
     return <p>Loading...</p>;
   }
 
+  console.log(products);
+
   return (
     <main>
       <form
@@ -151,7 +153,9 @@ const MenuBoss = () => {
                       <td className="border py-2">
                         <CurrencyInput
                           className="px-2 outline-none text-sm w-full"
-                          value={prod.product_amount > 0 ? prod.product_amount : ""}
+                          value={
+                            prod.product_amount > 0 ? prod.product_amount : ""
+                          }
                           onValueChange={(value, name) => {
                             handlePriceChange(index, value);
                           }}
@@ -163,7 +167,14 @@ const MenuBoss = () => {
                         />
                       </td>
                       <td className="border py-2">
-                        {f.format(prod.product_quantity).replaceAll(",", ".")}
+                        {f
+                          .format(
+                            prod.product_name.length >= 3
+                              ? Number(prod.product_quantity) / 1000
+                              : Number(prod.product_quantity)
+                          )
+                          .replaceAll(",", ".")}
+                          {prod.product_name.length >= 3 ? "кг." : "г."}
                       </td>
                     </tr>
                   ))

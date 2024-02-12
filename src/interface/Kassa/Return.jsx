@@ -41,7 +41,11 @@ const Return = () => {
         const clientName = await axios.get(`${API}users/all`);
         const vozvratData = await axios.get(`${API}vozvrats`);
         setClient(clientName.data);
-        setProduct(productName.data);
+        setProduct(
+          productName.data.filter(
+            (prod) => prod.product_name.length >= 3
+          )
+        );
         setVozData(vozvratData.data);
       } catch (error) {
         setError(error);
@@ -575,7 +579,12 @@ const Return = () => {
                               : f.format(item.sum).replaceAll(",", ".")}{" "}
                             сум
                           </span>
-                          <button className="px-2 py-1 bg-red-500 text-white rounded-md" onClick={handleDelete}>Delete</button>
+                          <button
+                            className="px-2 py-1 bg-red-500 text-white rounded-md"
+                            onClick={handleDelete}
+                          >
+                            Delete
+                          </button>
                         </li>
                       );
                     })}
