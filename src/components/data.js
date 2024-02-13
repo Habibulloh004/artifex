@@ -20,7 +20,7 @@ import {
 } from "../images";
 import RemoveProd from "../interface/Sklad/RemoveProd";
 
-export const API = "http://127.0.0.1:5000/";
+export const API = "http://192.168.0.124/";
 
 const users = [
   { role: "kassa", login: "kassauser", password: "kassapass" },
