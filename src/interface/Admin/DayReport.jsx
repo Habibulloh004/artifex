@@ -22,10 +22,8 @@ const DayReport = () => {
       }
     };
 
-    // Call the fetchData function
     fetchData();
   }, []);
-
 
   const tableHead = ["ID", "Номер", "ФИО", "Время"];
 
@@ -47,7 +45,7 @@ const DayReport = () => {
             </tr>
           </thead>
           <tbody>
-            {data.map((item, idx) => (
+            {data[0]?.all_orders_today?.map((item, idx) => (
               <tr className="relative" key={idx}>
                 <td className="py-1 border border-forth">
                   {item.order_id}

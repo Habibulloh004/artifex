@@ -40,6 +40,7 @@ import { API } from "./components/data";
 import Reconciliation from "./interface/Admin/Reconciliation";
 import RecUser from "./interface/Admin/RecUser";
 import RemoveProd from "./interface/Sklad/RemoveProd";
+import AllProfit from "./interface/Admin/AllProfit";
 
 function App() {
   const location = useLocation();
@@ -57,6 +58,13 @@ function App() {
     comments: "",
   });
   const [allSumData, setAllSumData] = useState(0);
+
+  useEffect(() => {
+    if (location.pathname !== "/admin/profit") {
+      localStorage.removeItem("profitData");
+      localStorage.removeItem("profitDate");
+    }
+  }, [location]);
 
   useEffect(() => {
     const localItem = localStorage.getItem("auth");
@@ -157,12 +165,17 @@ function App() {
       terminal: Number(paymentData.terminal || 0),
       card: Number(paymentData.card || 0),
       transfers: Number(paymentData.transfers || 0),
+      dolgsum: Number(paymentData.cash || 0) - Number(endData.all_priceSum),
+      dolgdol: Number(paymentData.dollar || 0) - Number(endData.all_priceDol),
     };
-    console.log(raw);
 
     if (
-      Number(endData.all_priceSum) < Number(raw.paidSum) ||
-      Number(endData.all_priceDol) < Number(raw.paidDol)
+      Number(endData.all_priceSum) <
+        Number(paymentData.cash || 0) +
+          Number(paymentData.card || 0) +
+          Number(paymentData.terminal || 0) +
+          Number(paymentData.transfers || 0) ||
+      Number(endData.all_priceDol) < Number(paymentData.dollar || 0)
     ) {
       setError("Введенная сумма большая!");
       return;
@@ -304,6 +317,10 @@ function App() {
               element={<PrivateRoute element={<RecUser />} />}
             />
             <Route
+              path="/admin/profit"
+              element={<PrivateRoute element={<AllProfit />} />}
+            />
+            <Route
               path="/admin/reports"
               element={<PrivateRoute element={<Reports />} />}
             >
@@ -324,7 +341,7 @@ function App() {
                 element={<PrivateRoute element={<UserReport />} />}
               />
             </Route>
-            <Route
+            {/* <Route
               path="/admin/profit"
               element={<PrivateRoute element={<Profit />} />}
             >
@@ -340,7 +357,7 @@ function App() {
                 path=":year/:month/:day"
                 element={<PrivateRoute element={<DayProfit />} />}
               />
-            </Route>
+            </Route> */}
           </Routes>
         </section>
         <Footer />

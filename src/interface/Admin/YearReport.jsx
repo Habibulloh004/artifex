@@ -13,7 +13,6 @@ const YearReport = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        // Make a GET request using axios
         const response = await axios.get(
           `${API}orders/${year}`
         );
@@ -59,7 +58,7 @@ const YearReport = () => {
     XLSX.utils.book_append_sheet(wb, ws, "OrdersYear");
     XLSX.writeFile(wb, "ordersyear.xlsx");
   };
-  console.log(data);
+
   if (!data) {
     return <p>Loading...</p>;
   }

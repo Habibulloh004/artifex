@@ -17,7 +17,7 @@ const Layout = () => {
       .then((response) => {
         setOrders(
           response.data.filter(
-            (order) => order.all_priceSum <= 0 
+            (order) => order.all_priceSum <= 0
           )
         );
       })
@@ -39,10 +39,20 @@ const Layout = () => {
       });
   }, []);
 
+  const deleteOrder = async (orderId) => {
+    try {
+      const response = await axios.delete(`${API}orders/delete_order/${orderId}`);
+      console.log(response.data.message);
+      window.location.reload()
+    } catch (error) {
+      console.error('Error deleting data:', error);
+    }
+  };
 
-  const tableHead = ["№", "Клиент", "Создано в"];
 
-  if(!orders || orders === null || !users) {
+  const tableHead = ["№", "Клиент", "Создано в", "Удалить заказ"];
+
+  if (!orders || orders === null || !users) {
     return <p>Loading...</p>
   }
 
@@ -79,7 +89,7 @@ const Layout = () => {
                     <td className="border border-primary py-2">
                       {index + 1}
                       <Link
-                        className="w-full h-full absolute left-0 top-0 "
+                        className="w-[85%] h-full absolute left-0 top-0 z-20"
                         to={`/sklad/request/${order.order_id}`}
                       ></Link>
                     </td>
@@ -90,6 +100,7 @@ const Layout = () => {
                       {new Date(order.create_at).toLocaleTimeString()} -{" "}
                       {new Date(order.create_at).toLocaleDateString()}
                     </td>
+                    <td className="border border-primary h-8 w-[15%]"><button onClick={() => { deleteOrder(order.order_id) }} className="bg-red-500 w-full font-semibold border-none text-white h-[99%]">Удалить</button></td>
                   </tr>
                 ))}
               </tbody>

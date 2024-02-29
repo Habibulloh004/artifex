@@ -15,19 +15,19 @@ const MinusDebt = () => {
   const [filteredClients, setFilteredClients] = useState([]);
   const [inputNumber, setInputNumber] = useState("");
   const [formData, setFormData] = useState({ number: "", sum: 0, dol: 0 });
+  const [error, setError] = useState("");
   const [formErrors, setFormErrors] = useState({
     number: "",
     sum: "",
     dol: "",
   });
+  const [selectClient, setSelectClient] = useState("");
   const { formatPhoneNumber } = useMyContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const clientData = await axios.get(
-          `${API}users/dolg_list`
-        );
+        const clientData = await axios.get(`${API}users/dolg_list`);
         setClients(clientData.data);
       } catch (error) {
         console.log(error);
@@ -40,10 +40,13 @@ const MinusDebt = () => {
     setIsOpen(false);
     setFormData({ number: "", sum: "" });
     setFormErrors({ number: "", sum: "" });
+    setError("");
+    setSelectClient("");
   };
 
   const openModal = () => {
     setIsOpen(true);
+    setError("");
   };
 
   const handleInputChange = (value) => {
@@ -54,6 +57,7 @@ const MinusDebt = () => {
         client.phone.toLowerCase().includes(value.toLowerCase())
       ) || []
     );
+    setError("");
   };
 
   const validateForm = () => {
@@ -84,9 +88,19 @@ const MinusDebt = () => {
         const user = clients.find(
           (client) => client.phone.toLowerCase() === userPhone.toLowerCase()
         );
+        const filterClient = clients.find(
+          (cli) => cli.phone === formData.number
+        );
+
+        if (
+          +filterClient.amountDol < +formData.dol ||
+          +filterClient.amountSum < +formData.sum
+        ) {
+          setError("Сумма выплаты большая");
+          return;
+        }
         if (user) {
           const userId = user.id;
-          console.log(formData);
           const formPatch = new FormData();
           formPatch.append("debt_amountSum", `${formData.sum}`);
           formPatch.append("debt_amountDol", `${formData.dol}`);
@@ -200,6 +214,7 @@ const MinusDebt = () => {
                                 ...formData,
                                 number: client.phone,
                               });
+                              setSelectClient(client.full_name);
                               setFilteredClients([]);
                             }}
                           >
@@ -209,9 +224,13 @@ const MinusDebt = () => {
                       </ul>
                     )}
                   </div>
+                  {selectClient && (
+                    <p className="text-[12px]">{selectClient}</p>
+                  )}
                   {formErrors.number && (
                     <p className="text-red-500 text-sm">{formErrors.number}</p>
                   )}
+
                   <CurrencyInput
                     className="py-2 px-3 text-[12px] w-[200px] rounded-md"
                     value={formData.dol > 0 ? formData.dol : ""}
@@ -238,6 +257,7 @@ const MinusDebt = () => {
                     groupSeparator=" "
                     prefix=""
                   />
+                  {error && <p className="text-red-500 text-sm">{error}</p>}
                   {formErrors.sum && (
                     <p className="text-red-500 text-sm">{formErrors.sum}</p>
                   )}
@@ -273,14 +293,13 @@ const AddClient = () => {
   const [inputNumber, setInputNumber] = useState("");
   const [formData, setFormData] = useState({ number: "" });
   const [formErrors, setFormErrors] = useState({ number: "" });
+  const [selectClient, setSelectClient] = useState("");
   const { formatPhoneNumber } = useMyContext();
 
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const clientData = await axios.get(
-          `${API}users/dolg_list`
-        );
+        const clientData = await axios.get(`${API}users/dolg_list`);
         const simpleClient = await axios.get(`${API}users/all`);
 
         setClients(clientData.data);
@@ -296,6 +315,7 @@ const AddClient = () => {
     setIsOpen(false);
     setFormData({ number: "" });
     setFormErrors({ number: "" });
+    setSelectClient("");
   };
 
   const openModal = () => {
@@ -449,6 +469,7 @@ const AddClient = () => {
                                   number: client.phone,
                                 });
                                 setFilteredClients([]);
+                                setSelectClient(client.full_name);
                               }}
                             >
                               {formatPhoneNumber(client.phone)}
@@ -457,6 +478,9 @@ const AddClient = () => {
                         </ul>
                       )}
                     </div>
+                    {selectClient && (
+                      <p className="text-[12px]">{selectClient}</p>
+                    )}
                     {formErrors.number && (
                       <p className="text-red-500 text-sm">
                         {formErrors.number}
@@ -499,9 +523,7 @@ const DeleteClient = () => {
   useEffect(() => {
     const fetchData = async () => {
       try {
-        const clientData = await axios.get(
-          `${API}users/blacklist_users`
-        );
+        const clientData = await axios.get(`${API}users/blacklist_users`);
         setClients(clientData.data);
       } catch (error) {
         console.log(error);
@@ -543,9 +565,7 @@ const DeleteClient = () => {
     try {
       if (selectedClient) {
         const userId = selectedClient.id;
-        await axios.delete(
-          `${API}users/remote_from_blacklist/${userId}`
-        );
+        await axios.delete(`${API}users/remote_from_blacklist/${userId}`);
         console.log("Deleted successfully");
 
         setClients((prevData) => prevData.filter((item) => item.id !== userId));
@@ -642,6 +662,9 @@ const DeleteClient = () => {
                         </ul>
                       )}
                     </div>
+                    {selectedClient && (
+                      <p className="text-[12px]">{selectedClient.full_name}</p>
+                    )}
                     {error && <p className="text-red-500 text-sm">{error}</p>}
                     <div className="flex flex-col mt-3 text-[12px] gap-2">
                       <button

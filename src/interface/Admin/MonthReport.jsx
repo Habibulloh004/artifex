@@ -23,6 +23,7 @@ const MonthReport = () => {
     // Call the fetchData function
     fetchData();
   }, []);
+  console.log(data);
 
   const exportToExcel = () => {
     const ws = XLSX.utils.json_to_sheet(
@@ -95,6 +96,16 @@ const MonthReport = () => {
                     ? f.format(item.total_transfers).replaceAll(",", ".")
                     : 0}{" "}
                   перчисления
+                  <br />
+                  {item.total_dolgdol
+                    ? f.format(item.total_dolgdol).replaceAll(",", ".")
+                    : 0}{" "}
+                  долг в долларах
+                  <br />
+                  {item.total_dolgsum
+                    ? f.format(item.total_dolgsum).replaceAll(",", ".")
+                    : 0}{" "}
+                  долг в суммах
                 </td>
               </tr>
             ))}
